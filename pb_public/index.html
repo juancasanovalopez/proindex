@@ -28,7 +28,7 @@
 
         /* 3. Maquetación asimétrica y limpia */
         .container { 
-            max-w: 760px; /* Ancho de lectura óptimo tipo editorial */
+            max-width: 760px; /* Ancho de lectura óptimo tipo editorial */
             margin: 0 auto; 
             padding: 5rem 1.5rem; 
         }
@@ -161,7 +161,7 @@
             const elLista = document.getElementById('proyectos-lista');
 
             // Eliminamos '?sort=-titulo' para resolver tu error 400 Bad Request
-            fetch('/api/collections/proyectos/records')
+            fetch('api/collections/proyectos/records')
                 .then(res => {
                     if (!res.ok) throw new Error();
                     return res.json();
@@ -182,6 +182,7 @@
                             year: 'numeric', month: 'long', day: 'numeric'
                         });
                         const explicacion = item.explicacion || 'Sin descripción adicional.';
+                        const url = obtenerURLSegura(item.url);
                         
                         const articulo = document.createElement('article');
                         articulo.className = 'project-item';
@@ -190,9 +191,9 @@
                             <p>${escaparHTML(explicacion)}</p>
                             <div class="meta-line">
                                 <span class="date">${fecha}</span>
-                                <a href="${encodeURI(item.url)}" target="_blank" rel="noopener noreferrer" class="link">
-                                    Acceder al recurso
-                                </a>
+                                ${url
+                                    ? `<a href="${escaparHTML(url)}" target="_blank" rel="noopener noreferrer" class="link">Acceder al recurso</a>`
+                                    : '<span class="date">Enlace no disponible</span>'}
                             </div>
                         `;
                         elLista.appendChild(articulo);
@@ -204,8 +205,17 @@
                 });
         });
 
+        function obtenerURLSegura(valor) {
+            try {
+                const url = new URL(valor);
+                return ['http:', 'https:'].includes(url.protocol) ? url.href : null;
+            } catch {
+                return null;
+            }
+        }
+
         function escaparHTML(str) {
-            return str.replace(/[&<>'"]/g, 
+            return String(str ?? '').replace(/[&<>'"]/g,
                 tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
             );
         }

@@ -9,6 +9,6 @@ services:
       - ./pb_data:/pb_data
       - ./pb_public:/usr/local/bin/pb_public
     environment:
-      - EMAIL=tu-email@dominio.com
-      - ADMIN_PASSWORD=UnaContraseñaSegura123
+      EMAIL: ${PB_ADMIN_EMAIL:?Set PB_ADMIN_EMAIL in .env}
+      ADMIN_PASSWORD: ${PB_ADMIN_PASSWORD:?Set PB_ADMIN_PASSWORD in .env}
     restart: unless-stopped
