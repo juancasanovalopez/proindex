@@ -60,13 +60,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             proyectos.forEach(item => {
-                const explicacion = item[`explicacion_${lang}`] || item.explicacion || t.noDesc;
-                const titulo = item[`titulo_${lang}`] || item.titulo || 'Proyecto';
-                const imagenUrl = item.captura
-                    ? `api/files/${encodeURIComponent(item.collectionId)}/${encodeURIComponent(item.id)}/${encodeURIComponent(item.captura)}`
+                const description = item[`description_${lang}`] || item.description || t.noDesc;
+                const name = item[`name_${lang}`] || item.name || 'Proyecto';
+                const imagenUrl = item.screenshot
+                    ? `api/files/${encodeURIComponent(item.collectionId)}/${encodeURIComponent(item.id)}/${encodeURIComponent(item.screenshot)}`
                     : '';
                 const imagen = imagenUrl
-                    ? `<img src="${imagenUrl}" class="project-image" alt="Captura de ${escaparHTML(titulo)}">`
+                    ? `<img src="${imagenUrl}" class="project-image" alt="screenshot de ${escaparHTML(name)}">`
                     : '';
                 const enlace = item.repo || item.enlace || item.url || '#';
 
@@ -74,8 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 articulo.className = 'project-item';
                 articulo.innerHTML = `
                     ${imagen}
-                    <h2>${escaparHTML(titulo)}</h2>
-                    <p>${escaparHTML(explicacion)}</p>
+                    <h2>${escaparHTML(name)}</h2>
+                    <p>${escaparHTML(description)}</p>
                     <div class="meta-line">
                         <a href="${escaparHTML(enlace)}" class="link" target="_blank" rel="noopener noreferrer">${t.visit}</a>
                     </div>
