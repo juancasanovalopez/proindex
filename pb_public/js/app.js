@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const elVacio = document.getElementById('estado-vacio');
     const elLista = document.getElementById('proyectos-lista');
 
-    fetch('/api/collections/proyectos/records')
+    fetch('api/collections/proyectos/records')
         .then(res => {
             if (!res.ok) throw new Error();
             return res.json();
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             elCargando.classList.add('hidden');
             
-            const proyectos = (data.items || []).sort((a, b) => new Date(b.created) - new Date(a.created));
+            const proyectos = data.items || [];
 
             if (proyectos.length === 0) {
                 elVacio.classList.remove('hidden');
@@ -60,16 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             proyectos.forEach(item => {
-                const fecha = new Date(item.created).toLocaleDateString(t.langLocale, {
-                    year: 'numeric', month: 'long', day: 'numeric'
-                });
-                
                 const explicacion = item[`explicacion_${lang}`] || item.explicacion || t.noDesc;
                 const titulo = item[`titulo_${lang}`] || item.titulo || 'Proyecto';
                 const imagen = item.captura
                     ? `<img src="${escaparHTML(item.captura)}" class="card-img-top" alt="Captura de ${escaparHTML(titulo)}">`
                     : '';
-                const enlace = item.enlace || item.url || '#';
+                const enlace = item.repo || item.enlace || item.url || '#';
 
                 const articulo = document.createElement('article');
                 articulo.className = 'project-item';
