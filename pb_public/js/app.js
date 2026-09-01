@@ -44,8 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const elVacio = document.getElementById('estado-vacio');
     const elLista = document.getElementById('proyectos-lista');
 
-    // La llamada viaja hacia Traefik usando el prefijo público externo
-    fetch('/prndx/api/collections/proyectos/records')
+    fetch('/api/collections/proyectos/records')
         .then(res => {
             if (!res.ok) throw new Error();
             return res.json();
@@ -66,20 +65,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 
                 const explicacion = item[`explicacion_${lang}`] || item.explicacion || t.noDesc;
-                const titulo = item[`titulo_${lang}`] || item.titulo;
+                const titulo = item[`titulo_${lang}`] || item.titulo || 'Proyecto';
+                const imagen = item.captura
+                    ? `<img src="${escaparHTML(item.captura)}" class="card-img-top" alt="Captura de ${escaparHTML(titulo)}">`
+                    : '';
+                const enlace = item.enlace || item.url || '#';
 
                 const articulo = document.createElement('article');
                 articulo.className = 'project-item';
                 articulo.innerHTML = `
                     <div class="card" style="width: 18rem; margin: 10px;">
-                        <!-- Aquí mapeamos el campo 'captura' en el src de la imagen -->
-                        <img src="${proyecto.captura}" class="card-img-top" alt="Captura de ${proyecto.nombre || 'Proyecto'}">
-            
+                        ${imagen}
                         <div class="card-body">
-                            <!-- Mapeamos el título u otros datos que tengas en tu BD -->
                             <h5 class="card-title">${escaparHTML(titulo)}</h5>
                             <p class="card-text">${escaparHTML(explicacion)}</p>
-                            <a href="${proyecto.enlace || '#'}" class="btn btn-primary" data-i18n="ver_mas">Go somewhere</a>
+                            <a href="${escaparHTML(enlace)}" class="btn btn-primary">${t.visit}</a>
                         </div>
                     </div>
     `;
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function escaparHTML(str) {
-    return str.replace(/[&<>'"]/g, 
+    return String(str).replace(/[&<>'"]/g,
         tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
     );
 }
