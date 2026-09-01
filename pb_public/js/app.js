@@ -71,15 +71,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 const articulo = document.createElement('article');
                 articulo.className = 'project-item';
                 articulo.innerHTML = `
-                    <h2>${escaparHTML(titulo)}</h2>
-                    <p>${escaparHTML(explicacion)}</p>
-                    <div class="meta-line">
-                        <span class="date">${fecha}</span>
-                        <a href="${encodeURI(item.url)}" target="_blank" rel="noopener noreferrer" class="link">
-                            ${t.visit}
-                        </a>
+                    <div class="card" style="width: 18rem; margin: 10px;">
+                        <!-- Aquí mapeamos el campo 'captura' en el src de la imagen -->
+                        <img src="${proyecto.captura}" class="card-img-top" alt="Captura de ${proyecto.nombre || 'Proyecto'}">
+            
+                        <div class="card-body">
+                            <!-- Mapeamos el título u otros datos que tengas en tu BD -->
+                            <h5 class="card-title">${escaparHTML(titulo)}</h5>
+                            <p class="card-text">${escaparHTML(explicacion)}</p>
+                            <a href="${proyecto.enlace || '#'}" class="btn btn-primary" data-i18n="ver_mas">Go somewhere</a>
+                        </div>
                     </div>
-                `;
+    `;
                 elLista.appendChild(articulo);
             });
         })
