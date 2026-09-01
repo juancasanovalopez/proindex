@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const elVacio = document.getElementById('estado-vacio');
     const elLista = document.getElementById('proyectos-lista');
 
-    fetch('api/collections/proyectos/records')
+    fetch('api/collections/projects/records')
         .then(res => {
             if (!res.ok) throw new Error();
             return res.json();
@@ -52,14 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             elCargando.classList.add('hidden');
             
-            const proyectos = data.items || [];
+            const projects = data.items || [];
 
-            if (proyectos.length === 0) {
+            if (projects.length === 0) {
                 elVacio.classList.remove('hidden');
                 return;
             }
 
-            proyectos.forEach(item => {
+            projects.forEach(item => {
                 const description = item[`description_${lang}`] || item.description || t.noDesc;
                 const name = item[`name_${lang}`] || item.name || 'Proyecto';
                 const imagenUrl = item.screenshot
@@ -68,19 +68,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 const imagen = imagenUrl
                     ? `<img src="${imagenUrl}" class="project-image" alt="screenshot de ${escaparHTML(name)}">`
                     : '';
-                const enlace = item.repo || item.enlace || item.url || '#';
-
-                const articulo = document.createElement('article');
-                articulo.className = 'project-item';
-                articulo.innerHTML = `
+                const public_url = item.public || '#';
+                const repo_url = item.repo || '#';
+                
+                const post = document.createElement('article');
+                post.className = 'project-item';
+                post.innerHTML = `
                     ${imagen}
                     <h2>${escaparHTML(name)}</h2>
                     <p>${escaparHTML(description)}</p>
                     <div class="meta-line">
-                        <a href="${escaparHTML(enlace)}" class="link" target="_blank" rel="noopener noreferrer">${t.visit}</a>
+                        <a href="${escaparHTML(public_url)}" class="link" target="_blank" rel="noopener noreferrer">${t.visit}</a>
+                    </div>
+                    <div class="meta-line">
+                        <a href="${escaparHTML(repo_url)}" class="link" target="_blank" rel="noopener noreferrer">${t.visit}</a>
                     </div>
     `;
-                elLista.appendChild(articulo);
+                elLista.appendChild(post);
             });
         })
         .catch(() => {
