@@ -62,21 +62,22 @@ document.addEventListener('DOMContentLoaded', () => {
             proyectos.forEach(item => {
                 const explicacion = item[`explicacion_${lang}`] || item.explicacion || t.noDesc;
                 const titulo = item[`titulo_${lang}`] || item.titulo || 'Proyecto';
-                const imagen = item.captura
-                    ? `<img src="${escaparHTML(item.captura)}" class="card-img-top" alt="Captura de ${escaparHTML(titulo)}">`
+                const imagenUrl = item.captura
+                    ? `api/files/${encodeURIComponent(item.collectionId)}/${encodeURIComponent(item.id)}/${encodeURIComponent(item.captura)}`
+                    : '';
+                const imagen = imagenUrl
+                    ? `<img src="${imagenUrl}" class="project-image" alt="Captura de ${escaparHTML(titulo)}">`
                     : '';
                 const enlace = item.repo || item.enlace || item.url || '#';
 
                 const articulo = document.createElement('article');
                 articulo.className = 'project-item';
                 articulo.innerHTML = `
-                    <div class="card" style="width: 18rem; margin: 10px;">
-                        ${imagen}
-                        <div class="card-body">
-                            <h5 class="card-title">${escaparHTML(titulo)}</h5>
-                            <p class="card-text">${escaparHTML(explicacion)}</p>
-                            <a href="${escaparHTML(enlace)}" class="btn btn-primary">${t.visit}</a>
-                        </div>
+                    ${imagen}
+                    <h2>${escaparHTML(titulo)}</h2>
+                    <p>${escaparHTML(explicacion)}</p>
+                    <div class="meta-line">
+                        <a href="${escaparHTML(enlace)}" class="link" target="_blank" rel="noopener noreferrer">${t.visit}</a>
                     </div>
     `;
                 elLista.appendChild(articulo);
