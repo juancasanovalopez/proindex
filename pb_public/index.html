@@ -183,7 +183,8 @@
                         });
                         const explicacion = item.explicacion || 'Sin descripción adicional.';
                         const url = obtenerURLSegura(item.url);
-                        
+                        const lenguajes = obtenerURLSegura(item.lenguajes);
+
                         const articulo = document.createElement('article');
                         articulo.className = 'project-item';
                         articulo.innerHTML = `
