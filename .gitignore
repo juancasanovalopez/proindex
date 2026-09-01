@@ -6,4 +6,5 @@ data/*
 # PocketBase data
 pb_data/
 
-.env*
+/data
+/data/*
