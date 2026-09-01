@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directorio de Proyectos</title>
+    <style>
+        /* 1. Paleta de colores Rams: Fondo crema mate, contraste constructivo */
+        :root {
+            --bg-color: #f7f4eb;       /* Crema sutil, no brillante */
+            --text-main: #1a1a1a;      /* Negro puro mate */
+            --text-muted: #666666;     /* Gris funcional para metadatos */
+            --accent: #4f46e5;         /* Color estructural (Uso mínimo) */
+            --error-bg: #f2dede;       
+            --error-text: #a94442;
+        }
+
+        /* 2. Tipografía inspirada en Medium / El País (Nativa y limpia) */
+        body { 
+            font-family: "Georgia", "Times New Roman", serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            margin: 0; 
+            padding: 0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 3. Maquetación asimétrica y limpia */
+        .container { 
+            max-w: 760px; /* Ancho de lectura óptimo tipo editorial */
+            margin: 0 auto; 
+            padding: 5rem 1.5rem; 
+        }
+
+        header { 
+            margin-bottom: 4rem; 
+            border-bottom: 2px solid var(--text-main);
+            padding-bottom: 1.5rem;
+        }
+
+        h1 { 
+            font-size: 2.5rem; 
+            font-weight: 700; 
+            letter-spacing: -0.03em;
+            margin: 0; 
+        }
+
+        .subtitle { 
+            margin-top: 0.5rem; 
+            font-size: 1.125rem; 
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* 4. Lista cronológica limpia (Sin bloques ni tarjetas artificiales) */
+        .project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 3.5rem;
+        }
+
+        /* Estética Rams: El producto es el contenido, no el contenedor */
+        .project-item { 
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            padding-bottom: 2.5rem;
+        }
+
+        .project-item h2 { 
+            font-size: 1.65rem; 
+            margin: 0 0 0.75rem 0; 
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .project-item p { 
+            color: #333333; 
+            font-size: 1.05rem; 
+            margin: 0 0 1.25rem 0; 
+            max-width: 650px;
+        }
+
+        .meta-line {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            font-family: system-ui, -apple-system, sans-serif; /* Datos técnicos en sans-serif */
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .date { color: var(--text-muted); }
+        
+        .link { 
+            color: var(--text-main); 
+            text-decoration: none; 
+            font-weight: 700;
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 2px;
+            transition: opacity 0.2s;
+        }
+        .link:hover { opacity: 0.6; }
+
+        /* Estados del sistema simplificados */
+        .status { 
+            font-family: system-ui, sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        
+        .error-message { 
+            background: var(--error-bg); 
+            color: var(--error-text); 
+            padding: 1rem; 
+            font-family: system-ui, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Encabezado Estilo Diario/Editorial -->
+        <header>
+            <h1>Directorio de proyectos</h1>
+            <div class="subtitle">Una lista pública de recursos compartidos</div>
+        </header>
+
+        <!-- Estado de carga discreto -->
+        <div id="estado-cargando" class="status">
+            Format: Buscando registros...
+        </div>
+
+        <!-- Estado de error -->
+        <div id="estado-error" class="error-message hidden">
+            [Error de sistema] 400 Bad Request. Comprueba los campos expuestos en PocketBase.
+        </div>
+
+        <!-- Lista vacía -->
+        <div id="estado-vacio" class="status hidden">
+            0 proyectos encontrados en la base de datos.
+        </div>
+
+        <!-- Contenedor del listado puro -->
+        <main id="proyectos-lista" class="project-list"></main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const elCargando = document.getElementById('estado-cargando');
+            const elError = document.getElementById('estado-error');
+            const elVacio = document.getElementById('estado-vacio');
+            const elLista = document.getElementById('proyectos-lista');
+
+            // Eliminamos '?sort=-titulo' para resolver tu error 400 Bad Request
+            fetch('/api/collections/proyectos/records')
+                .then(res => {
+                    if (!res.ok) throw new Error();
+                    return res.json();
+                })
+                .then(data => {
+                    elCargando.classList.add('hidden');
+                    
+                    // Ordenamos los datos nativamente en Javascript para evitar el fallo de PocketBase
+                    const proyectos = (data.items || []).sort((a, b) => new Date(b.titulo) - new Date(a.titulo));
+
+                    if (proyectos.length === 0) {
+                        elVacio.classList.remove('hidden');
+                        return;
+                    }
+
+                    proyectos.forEach(item => {
+                        const fecha = new Date(item.titulo).toLocaleDateString('es-ES', {
+                            year: 'numeric', month: 'long', day: 'numeric'
+                        });
+                        const explicacion = item.explicacion || 'Sin descripción adicional.';
+                        
+                        const articulo = document.createElement('article');
+                        articulo.className = 'project-item';
+                        articulo.innerHTML = `
+                            <h2>${escaparHTML(item.titulo)}</h2>
+                            <p>${escaparHTML(explicacion)}</p>
+                            <div class="meta-line">
+                                <span class="date">${fecha}</span>
+                                <a href="${encodeURI(item.url)}" target="_blank" rel="noopener noreferrer" class="link">
+                                    Acceder al recurso
+                                </a>
+                            </div>
+                        `;
+                        elLista.appendChild(articulo);
+                    });
+                })
+                .catch(() => {
+                    elCargando.classList.add('hidden');
+                    elError.classList.remove('hidden');
+                });
+        });
+
+        function escaparHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+    </script>
+</body>
+</html>

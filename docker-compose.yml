@@ -1,0 +1,14 @@
+services:
+  pocketbase:
+    image: elestio/pocketbase:latest
+    container_name: pocketbase-local
+    user: "0:0"
+    ports:
+      - "8100:8090"
+    volumes:
+      - ./pb_data:/pb_data
+      - ./pb_public:/usr/local/bin/pb_public
+    environment:
+      - EMAIL=tu-email@dominio.com
+      - ADMIN_PASSWORD=UnaContraseñaSegura123
+    restart: unless-stopped

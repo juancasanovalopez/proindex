@@ -1,0 +1,7 @@
+.env
+data/*
+!data/.gitkeep
+!data/types.d.ts
+
+# PocketBase data
+pb_data/
