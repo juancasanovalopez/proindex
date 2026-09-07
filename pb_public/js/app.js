@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${imagen}
                     <p class="project-badges">${badgesHtml}</p>
                     <div class="project-description-full">
-                        <p>${escaparHTML(descriptionFull)}</p>
+                        <p>${descriptionFull}</p>
                     </div>
                 `;
                 elPost.appendChild(postCard);
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </h2>
                         ${imagen}
                         <p class="project-badges">${badgesHtml}</p>
-                        <p>${escaparHTML(description)}</p>
+                        <p>${description}</p>
                     `;
                     elLista.appendChild(postCard);
                 });
