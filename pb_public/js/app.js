@@ -58,8 +58,8 @@ function getScreenshotUrl(project) {
 }
 
 function getProjectLanguages(project) {
-    if (Array.isArray(project.languajes)) return project.languajes;
-    return project.languajes ? [project.languajes] : [];
+    if (Array.isArray(project.languages)) return project.languages;
+    return project.languages ? [project.languages] : [];
 }
 
 document.addEventListener('DOMContentLoaded', () => {
