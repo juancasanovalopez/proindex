@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Directorio de Proyectos</title>
+    <title data-i18n="postTitle">Detalle del Proyecto</title>
     
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/styles.css">
     
     <script defer src="./js/bootstrap.bundle.min.js"></script>
+    <!-- Cargamos un script específico para el detalle del post -->
     <script defer src="./js/app.js"></script>
 </head>
 <body>
@@ -19,13 +20,8 @@
             <a class="blog-nav-link" href="index.html" data-i18n="allProjects"></a>
         </header>
 
-        <section class="blog-intro" aria-labelledby="page-title">
-            <h1 id="page-title" data-i18n="title"></h1>
-            <p class="subtitle" data-i18n="subtitle"></p>
-        </section>
-
         <div class="row g-5">
-            <main id="proyectos-lista" class="project-list col-lg-8" aria-live="polite">
+            <main id="projectos-contenido" class="project-content col-lg-8" aria-live="polite">
                 <div id="estado-cargando" class="status" data-i18n="loading"></div>
                 <div id="estado-error" class="error-message hidden" data-i18n="error"></div>
                 <div id="estado-vacio" class="status hidden" data-i18n="empty"></div>

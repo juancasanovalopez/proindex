@@ -1,10 +1,21 @@
+# Local environment files
 .env
+.env.*
+!.env.example
+
+# JavaScript dependencies
+node_modules/
+
+# PocketBase runtime data
+pb_data/
+.notify/
+
+# Keep only declarations required by the project from local data.
 data/*
 !data/.gitkeep
 !data/types.d.ts
 
-# PocketBase data
-pb_data/
-
-/data
-/data/*
+# SQLite runtime files
+*.db
+*.db-shm
+*.db-wal

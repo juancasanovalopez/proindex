@@ -18,12 +18,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
-            # 1. Navegar a la carpeta donde está tu proyecto en el servidor
             cd /home/deployproindex/proindex
-            
-            # 2. Descargar los últimos cambios de GitHub
             git pull origin main
-            
-            # 3. Reiniciar el contenedor de PocketBase para aplicar cambios si fuera necesario
             docker compose down
             docker compose up -d
