@@ -1,6 +1,6 @@
 const i18n = {
     es: {
-        title: "Directorio de proyectos",
+        title: "Portfolio",
         directory: "Directorio",
         allProjects: "Todos los proyectos",
         subtitle: "Una lista pública de recursos compartidos",
@@ -8,12 +8,13 @@ const i18n = {
         error: "[Error de sistema] No se pudieron cargar los datos.",
         empty: "0 proyectos encontrados en la base de datos.",
         repo: "repositorio de código",
+        noRepo: "Sin repositorio disponible.",
         public: "url pública",
         noDesc: "Sin descripción adicional.",
         langLocale: "es-ES"
     },
     en: {
-        title: "Project Directory",
+        title: "Portfolio",
         directory: "Directory",
         allProjects: "All projects",
         subtitle: "A public list of shared resources",
@@ -21,12 +22,13 @@ const i18n = {
         error: "[System Error] Data could not be loaded.",
         empty: "0 projects found in the database.",
         repo: "code repository",
+        noRepo: "No repository available.",
         public: "Public url",
         noDesc: "No additional description available.",
         langLocale: "en-US"
     },
     fr: {
-        title: "Répertoire des projets",
+        title: "Portfolio",
         directory: "Répertoire",
         allProjects: "Tous les projets",
         subtitle: "Une liste publique de ressources partagées",
@@ -34,6 +36,7 @@ const i18n = {
         error: "[Erreur système] Impossible de charger les données.",
         empty: "0 projet trouvé dans la base de données.",
         repo: "dépôt de code",
+        noRepo: "Pas de dépôt disponible.",
         public: "URL publique",
         noDesc: "Aucune description supplémentaire disponible.",
         langLocale: "fr-FR"
@@ -55,6 +58,14 @@ function getScreenshotUrl(project) {
     if (!project.screenshot) return '';
 
     return `api/files/${encodeURIComponent(project.collectionId)}/${encodeURIComponent(project.id)}/${encodeURIComponent(project.screenshot)}`;
+}
+
+function getMultipleSelection(project, fieldName) {
+    if (!project || !fieldName) return [];
+    const value = project[fieldName];
+    
+    if (Array.isArray(value)) return value;
+    return value ? [value] : [];
 }
 
 function getProjectLanguages(project) {
@@ -103,14 +114,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const name = project.name || 'Proyecto';
                 const descriptionFull = project[`description_${lang}`] || t.noDesc;
                 const imagenUrl = getScreenshotUrl(project);
-                
+                const repoUrl = project.repo || t.noRepo ;
                 const imagen = imagenUrl
                     ? `<img src="${imagenUrl}" class="project-image-full img-fluid" alt="screenshot de ${escaparHTML(name)}" loading="lazy" decoding="async">`
                     : '';
                 
-                const badgesHtml = getProjectLanguages(project)
+                const progLanguages = getMultipleSelection(project, 'languages')
                     .map(opcion => `<span class="badge rounded-pill text-bg-dark">${escaparHTML(opcion)}</span>`)
                     .join(' ');
+                
+                const techStack = getMultipleSelection(project, 'tech_stack')
+                    .map(opcion => `<span class="badge rounded-pill text-bg-dark">${escaparHTML(opcion)}</span>`)
+                    .join(' ');    
+                
 
                 const postCard = document.createElement('article');
                 postCard.className = 'project-detail';
@@ -119,10 +135,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 postCard.innerHTML = `
                     <h1>${escaparHTML(name)}</h1>
                     ${imagen}
-                    <p class="project-badges">${badgesHtml}</p>
+                    <p class="project-badges">${progLanguages}</p>
+                    <p class="project-badges">${techStack}</p>
+                    
                     <div class="project-description-full">
                         <p>${descriptionFull}</p>
                     </div>
+                    <p><a href="${escaparHTML(repoUrl)}" target="_blank" rel="noopener noreferrer">${repoUrl}</a></p>
                 `;
                 elPost.appendChild(postCard);
             })
@@ -163,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
                            </a>`
                         : '';
                     
-                    const badgesHtml = getProjectLanguages(project)
+                    const progLanguages = getProjectLanguages(project)
                         .map(opcion => `<span class="badge rounded-pill text-bg-dark">${escaparHTML(opcion)}</span>`)
                         .join(' ');
                     
@@ -177,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             </a>
                         </h2>
                         ${imagen}
-                        <p class="project-badges">${badgesHtml}</p>
+                        <p class="project-badges">${progLanguages}</p>
                         <p>${description}</p>
                     `;
                     elLista.appendChild(postCard);
