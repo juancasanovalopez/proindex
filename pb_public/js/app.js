@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="project-badges">${projectData.progLanguagesHtml}</p>
                     <p class="project-badges">${projectData.techStackHtml}</p>
                     <div class="project-description-full">
-                        <p>${escaparHTML(projectData.descriptionFull)}</p>
+                        <p>${projectData.descriptionFull}</p>
                     </div>
                     <div class="card project-links-card">
                             <div class="card-body">
