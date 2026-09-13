@@ -8,8 +8,11 @@ const i18n = {
         error: "[Error de sistema] No se pudieron cargar los datos.",
         empty: "0 proyectos encontrados en la base de datos.",
         repo: "repositorio de código",
+        codeRepository: "Repositorio de código",
         noRepo: "Sin repositorio disponible.",
         public: "url pública",
+        publicUrl: "URL pública",
+        noPublic: "Sin URL pública disponible.",
         noDesc: "Sin descripción adicional.",
         langLocale: "es-ES"
     },
@@ -22,8 +25,11 @@ const i18n = {
         error: "[System Error] Data could not be loaded.",
         empty: "0 projects found in the database.",
         repo: "code repository",
+        codeRepository: "Code Repository",
         noRepo: "No repository available.",
         public: "Public url",
+        publicUrl: "Public URL",
+        noPublic: "No public URL available.",
         noDesc: "No additional description available.",
         langLocale: "en-US"
     },
@@ -36,8 +42,11 @@ const i18n = {
         error: "[Erreur système] Impossible de charger les données.",
         empty: "0 projet trouvé dans la base de données.",
         repo: "dépôt de code",
+        codeRepository: "Dépôt de code",
         noRepo: "Pas de dépôt disponible.",
         public: "URL publique",
+        publicUrl: "URL publique",
+        noPublic: "Pas d'URL publique disponible.",
         noDesc: "Aucune description supplémentaire disponible.",
         langLocale: "fr-FR"
     }
@@ -63,14 +72,43 @@ function getScreenshotUrl(project) {
 function getMultipleSelection(project, fieldName) {
     if (!project || !fieldName) return [];
     const value = project[fieldName];
-    
+
     if (Array.isArray(value)) return value;
     return value ? [value] : [];
 }
 
-function getProjectLanguages(project) {
-    if (Array.isArray(project.languages)) return project.languages;
-    return project.languages ? [project.languages] : [];
+function recortarDescripcion(texto) {
+    if (!texto) return '';
+    const palabras = texto.trim().split(/\s+/);
+    if (palabras.length > 30) {
+        return palabras.slice(0, 30).join(' ') + '...';
+    }
+    return texto;
+}
+
+function prepararProyecto(project, lang, t, esLista = false) {
+    const name = project.name || 'Proyecto';
+    const descriptionFull = project[`description_${lang}`] || t.noDesc;
+    const progLanguages = getMultipleSelection(project, 'languages');
+    const techStack = getMultipleSelection(project, 'tech_stack');
+
+    return {
+        name,
+        descriptionFull,
+        description: esLista ? recortarDescripcion(descriptionFull) : '',
+        imagenUrl: getScreenshotUrl(project),
+        repoUrl: project.repo || t.noRepo,
+        publicUrl: project.public || t.noPublic,
+        progLanguagesHtml: renderBadges(progLanguages),
+        techStackHtml: renderBadges(techStack, true),
+        postDetailUrl: esLista ? `post.html?id=${encodeURIComponent(project.id)}` : ''
+    };
+}
+
+function renderBadges(options) {
+    return options
+        .map(option => `<span class="badge rounded-pill text-bg-dark">  ${escaparHTML(option)}</span>`)
+        .join(' ');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -92,15 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('id');
 
-    function recortarDescripcion(texto) {
-        if (!texto) return '';
-        const palabras = texto.trim().split(/\s+/);
-        if (palabras.length > 30) {
-            return palabras.slice(0, 30).join(' ') + '...';
-        }
-        return texto;
-    }
-
     // --- MODO A: VISTA DE DETALLE (post.html) ---
     if (postId && elPost) {
         fetch(`${projectsApiPath}/${encodeURIComponent(postId)}`)
@@ -111,37 +140,36 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(project => {
                 if (elCargando) elCargando.classList.add('hidden');
 
-                const name = project.name || 'Proyecto';
-                const descriptionFull = project[`description_${lang}`] || t.noDesc;
-                const imagenUrl = getScreenshotUrl(project);
-                const repoUrl = project.repo || t.noRepo ;
-                const imagen = imagenUrl
-                    ? `<img src="${imagenUrl}" class="project-image-full img-fluid" alt="screenshot de ${escaparHTML(name)}" loading="lazy" decoding="async">`
+                const projectData = prepararProyecto(project, lang, t);
+                const imagen = projectData.imagenUrl
+                    ? `<img src="${projectData.imagenUrl}" class="project-image-full img-fluid" alt="screenshot de ${escaparHTML(projectData.name)}" loading="lazy" decoding="async">`
                     : '';
-                
-                const progLanguages = getMultipleSelection(project, 'languages')
-                    .map(opcion => `<span class="badge rounded-pill text-bg-dark">${escaparHTML(opcion)}</span>`)
-                    .join(' ');
-                
-                const techStack = getMultipleSelection(project, 'tech_stack')
-                    .map(opcion => `<span class="badge rounded-pill text-bg-dark">${escaparHTML(opcion)}</span>`)
-                    .join(' ');    
-                
-
                 const postCard = document.createElement('article');
                 postCard.className = 'project-detail';
 
                 // Pintamos la información completa sin recortar en post.html
                 postCard.innerHTML = `
-                    <h1>${escaparHTML(name)}</h1>
+                    <h1>${escaparHTML(projectData.name)}</h1>
                     ${imagen}
-                    <p class="project-badges">${progLanguages}</p>
-                    <p class="project-badges">${techStack}</p>
-                    
+                    <p class="project-badges">${projectData.progLanguagesHtml}</p>
+                    <p class="project-badges">${projectData.techStackHtml}</p>
                     <div class="project-description-full">
-                        <p>${descriptionFull}</p>
+                        <p>${escaparHTML(projectData.descriptionFull)}</p>
                     </div>
-                    <p><a href="${escaparHTML(repoUrl)}" target="_blank" rel="noopener noreferrer">${repoUrl}</a></p>
+                    <div class="card project-links-card">
+                            <div class="card-body">
+                                <div class="project-links">
+                                    <a class="project-link" href="${escaparHTML(projectData.repoUrl)}" target="_blank" rel="noopener noreferrer">
+                                        <i class="bi bi-git" aria-hidden="true"></i>
+                                        <span>${t.codeRepository}</span>
+                                    </a>
+                                    <a class="project-link" href="${escaparHTML(projectData.publicUrl)}" target="_blank" rel="noopener noreferrer">
+                                        <i class="bi bi-globe2" aria-hidden="true"></i>
+                                        <span>${t.publicUrl}</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                 `;
                 elPost.appendChild(postCard);
             })
@@ -160,47 +188,39 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(data => {
                 if (elCargando) elCargando.classList.add('hidden');
-                
-                const projects = data.items || [];
 
+                const projects = data.items || [];
                 if (projects.length === 0) {
                     if (elVacio) elVacio.classList.remove('hidden');
                     return;
                 }
 
+                const projectFragment = document.createDocumentFragment();
+
                 projects.forEach(project => {
-                    const descriptionOriginal = project[`description_${lang}`] || t.noDesc;
-                    const description = recortarDescripcion(descriptionOriginal);
-                    const name = project.name || 'Proyecto';
-                    const postDetailUrl = `post.html?id=${encodeURIComponent(project.id)}`;
-                    
-                    const imagenUrl = getScreenshotUrl(project);
-                    
-                    const imagen = imagenUrl
-                        ? `<a href="${escaparHTML(postDetailUrl)}" class="project-image-link">
-                            <img src="${imagenUrl}" class="project-image" alt="screenshot de ${escaparHTML(name)}" loading="lazy" decoding="async">
+                    const projectData = prepararProyecto(project, lang, t, true);
+                    const imagen = projectData.imagenUrl
+                        ? `<a href="${escaparHTML(projectData.postDetailUrl)}" class="project-image-link">
+                            <img src="${projectData.imagenUrl}" class="project-image" alt="screenshot de ${escaparHTML(projectData.name)}" loading="lazy" decoding="async">
                            </a>`
                         : '';
-                    
-                    const progLanguages = getProjectLanguages(project)
-                        .map(opcion => `<span class="badge rounded-pill text-bg-dark">${escaparHTML(opcion)}</span>`)
-                        .join(' ');
-                    
                     const postCard = document.createElement('article');
                     postCard.className = 'project-item';
 
                     postCard.innerHTML = `
                         <h2>
-                            <a href="${escaparHTML(postDetailUrl)}" class="project-title-link">
-                                ${escaparHTML(name)}
+                            <a href="${escaparHTML(projectData.postDetailUrl)}" class="project-title-link">
+                                ${escaparHTML(projectData.name)}
                             </a>
                         </h2>
                         ${imagen}
-                        <p class="project-badges">${progLanguages}</p>
-                        <p>${description}</p>
+                        <p class="project-badges">${projectData.progLanguagesHtml}</p>
+                        <p class="project-badges">${projectData.techStackHtml}</p>
+                        <p>${projectData.description}</p>
                     `;
-                    elLista.appendChild(postCard);
+                    projectFragment.appendChild(postCard);
                 });
+                elLista.appendChild(projectFragment);
             })
             .catch(error => {
                 console.error('No se pudo cargar la lista de proyectos.', error);
@@ -208,7 +228,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (elError) elError.classList.remove('hidden');
             });
     }
-
 });
 
 function escaparHTML(str) {

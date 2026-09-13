@@ -5,6 +5,7 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "devDependencies": {
+    "bootstrap-icons": "^1.13.1",
     "eslint": "^9.0.0"
   }
 }
