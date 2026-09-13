@@ -10,7 +10,8 @@ export default [
                 fetch: 'readonly',
                 navigator: 'readonly',
                 URLSearchParams: 'readonly',
-                window: 'readonly'
+                window: 'readonly',
+                mermaid: 'readonly'
             }
         },
         rules: {
