@@ -89,8 +89,8 @@ function getMultipleSelection(project, fieldName) {
 function recortarDescripcion(texto) {
     if (!texto) return '';
     const palabras = texto.trim().split(/\s+/);
-    if (palabras.length > 30) {
-        return palabras.slice(0, 30).join(' ') + '...';
+    if (palabras.length > 50) {
+        return palabras.slice(0, 50).join(' ') + '...';
     }
     return texto;
 }
@@ -106,8 +106,8 @@ function prepararProyecto(project, lang, t, esLista = false) {
         descriptionFull,
         description: esLista ? recortarDescripcion(descriptionFull) : '',
         imagenUrl: getScreenshotUrl(project),
-        repoUrl: project.repo || t.noRepo,
-        publicUrl: project.public || t.noPublic,
+        repoUrl: typeof project.repo === 'string' ? project.repo.trim() : '',
+        publicUrl: typeof project.public === 'string' ? project.public.trim() : '',
         diagram: project.arch_schema || t.noDiagram,
         progLanguagesHtml: renderBadges(progLanguages),
         techStackHtml: renderBadges(techStack, true),
@@ -119,6 +119,37 @@ function renderBadges(options) {
     return options
         .map(option => `<span class="badge rounded-pill text-bg-dark">  ${escaparHTML(option)}</span>`)
         .join(' ');
+}
+
+function renderProjectLinks(projectData, t) {
+    const links = [];
+
+    if (projectData.repoUrl) {
+        links.push(`
+            <a class="project-link" href="${escaparHTML(projectData.repoUrl)}" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-git" aria-hidden="true"></i>
+                <span>${t.codeRepository}</span>
+            </a>`);
+    }
+
+    if (projectData.publicUrl) {
+        links.push(`
+            <a class="project-link" href="${escaparHTML(projectData.publicUrl)}" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-globe2" aria-hidden="true"></i>
+                <span>${t.publicUrl}</span>
+            </a>`);
+    }
+
+    if (links.length === 0) return '';
+
+    return `
+        <div class="card project-links-card">
+            <div class="card-body">
+                <div class="project-links">
+                    ${links.join('')}
+                </div>
+            </div>
+        </div>`;
 }
 
 async function renderProjectDiagram(container, diagram, t) {
@@ -194,20 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h2 id="project-diagram-title">${t.architecture}</h2>
                         <div class="project-diagram-canvas" role="img" aria-label="${t.architecture}"></div>
                     </section>
-                    <div class="card project-links-card">
-                            <div class="card-body">
-                                <div class="project-links">
-                                    <a class="project-link" href="${escaparHTML(projectData.repoUrl)}" target="_blank" rel="noopener noreferrer">
-                                        <i class="bi bi-git" aria-hidden="true"></i>
-                                        <span>${t.codeRepository}</span>
-                                    </a>
-                                    <a class="project-link" href="${escaparHTML(projectData.publicUrl)}" target="_blank" rel="noopener noreferrer">
-                                        <i class="bi bi-globe2" aria-hidden="true"></i>
-                                        <span>${t.publicUrl}</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                    ${renderProjectLinks(projectData, t)}
                 `;
                 elPost.appendChild(postCard);
                 renderProjectDiagram(

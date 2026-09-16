@@ -1,155 +1,155 @@
 # Pro Index
 
-Directorio público de proyectos construido con un frontend estático y PocketBase. La aplicación muestra una lista de proyectos, permite abrir el detalle de cada registro y ofrece enlaces al repositorio de código y a la URL pública del proyecto.
+Public project directory built with a static frontend and PocketBase. The application displays a list of projects, lets users open each record's details, and provides links to the code repository and the project's public URL.
 
-## Características
+## Features
 
-- Listado de proyectos desde la colección `projects` de PocketBase.
-- Vista de detalle mediante `post.html?id=<project-id>`.
-- Descripciones en español, inglés y francés según el idioma preferido del navegador.
-- Imágenes de proyecto servidas desde los archivos de PocketBase.
-- Enlaces a repositorio y URL pública.
-- Bootstrap 5 y Bootstrap Icons servidos localmente.
-- Diseño responsive para escritorio y dispositivos móviles.
+- Project listing from the PocketBase `projects` collection.
+- Detail view through `post.html?id=<project-id>`.
+- Descriptions in Spanish, English, and French based on the browser's preferred language.
+- Project images served from PocketBase files.
+- Links to the repository and public URL.
+- Bootstrap 5 and Bootstrap Icons served locally.
+- Responsive design for desktop and mobile devices.
 
-## Requisitos
+## Requirements
 
-- Docker y Docker Compose.
-- Node.js y npm para ejecutar ESLint localmente.
+- Docker and Docker Compose.
+- Node.js and npm to run ESLint locally.
 
-## Configuración
+## Configuration
 
-1. Crea el archivo `.env` a partir de `.env.example`:
+1. Create the `.env` file from `.env.example`:
 
    ```bash
    cp .env.example .env
    ```
 
-2. Define credenciales de administrador propias en `.env`:
+2. Set your own administrator credentials in `.env`:
 
    ```env
    PB_ADMIN_EMAIL=admin@localhost.local
    PB_ADMIN_PASSWORD=replace-with-a-generated-secret
    ```
 
-   No subas `.env` al repositorio. El archivo está excluido mediante `.gitignore`.
+    Do not upload `.env` to the repository. The file is excluded through `.gitignore`.
 
-## Ejecución con Docker
+## Running with Docker
 
-Inicia PocketBase junto con el frontend estático:
+Start PocketBase together with the static frontend:
 
 ```bash
 docker compose up -d
 ```
 
-La aplicación estará disponible en:
+The application will be available at:
 
 - Frontend: <http://localhost:8100>
-- Panel de administración de PocketBase: <http://localhost:8100/_/>
+- PocketBase admin dashboard: <http://localhost:8100/_/>
 
-Para detener el contenedor:
+To stop the container:
 
 ```bash
 docker compose down
 ```
 
-Los datos persistentes de PocketBase se almacenan en `pb_data/` y se montan en el contenedor mediante Docker Compose.
+Persistent PocketBase data is stored in `pb_data/` and mounted into the container through Docker Compose.
 
-## Desarrollo y validación
+## Development and validation
 
-Instala las dependencias de Node.js:
+Install the Node.js dependencies:
 
 ```bash
 npm install
 ```
 
-Ejecuta ESLint sobre el frontend:
+Run ESLint on the frontend:
 
 ```bash
 npm run lint
 ```
 
-Aplica las correcciones automáticas disponibles:
+Apply the available automatic fixes:
 
 ```bash
 npm run lint:fix
 ```
 
-También puedes comprobar la sintaxis de JavaScript directamente:
+You can also check the JavaScript syntax directly:
 
 ```bash
 node --check pb_public/js/app.js
 ```
 
-## Datos de proyectos
+## Project data
 
-La aplicación consulta la API pública de PocketBase mediante:
+The application queries the public PocketBase API through:
 
 ```text
 /api/collections/projects/records
 ```
 
-La colección `projects` debe proporcionar, como mínimo, estos campos:
+The `projects` collection must provide at least the following fields:
 
-- `id`: identificador del registro.
-- `name`: nombre del proyecto.
-- `description_es`, `description_en` y `description_fr`: descripciones traducidas.
-- `languages`: lenguaje o selección múltiple de lenguajes.
-- `tech_stack`: selección múltiple de tecnologías.
-- `screenshot`: nombre del archivo de imagen, si existe.
-- `collectionId`: identificador de la colección usado para construir la URL del archivo.
-- `repo`: URL del repositorio de código.
-- `public`: URL pública del proyecto.
-- `schema`: esquema Mermaid específico del proyecto, mostrado en la vista de detalle.
+- `id`: record identifier.
+- `name`: project name.
+- `description_es`, `description_en`, and `description_fr`: translated descriptions.
+- `languages`: language or multi-select language field.
+- `tech_stack`: multi-select technology field.
+- `screenshot`: image filename, if available.
+- `collectionId`: collection identifier used to build the file URL.
+- `repo`: code repository URL.
+- `public`: public project URL.
+- `schema`: project-specific Mermaid diagram, displayed in the detail view.
 
-Los campos `languages` y `tech_stack` pueden recibirse como valores únicos o como arrays. El frontend normaliza ambos casos antes de renderizar las insignias.
+The `languages` and `tech_stack` fields may be received as single values or arrays. The frontend normalizes both cases before rendering the badges.
 
-El campo `schema` debe contener únicamente el código Mermaid del diagrama. Por ejemplo:
+The `schema` field must contain only the diagram's Mermaid code. For example:
 
 ````text
 flowchart LR
-    browser["Navegador"] --> app["Frontend"]
+    browser["Browser"] --> app["Frontend"]
     app --> api["PocketBase API"]
     api --> data[("projects")]
 ````
 
-La vista de detalle carga Mermaid localmente y renderiza el esquema asociado al registro. Si un proyecto no tiene `schema`, la sección del diagrama no se muestra. Como compatibilidad con registros existentes, también se aceptan los campos `diagram` y `architecture`, aunque `schema` es el nombre recomendado.
+The detail view loads Mermaid locally and renders the diagram associated with the record. If a project does not have `schema`, the diagram section is not displayed. For compatibility with existing records, the `diagram` and `architecture` fields are also accepted, although `schema` is the recommended name.
 
-## Estructura del proyecto
+## Project structure
 
 ```text
 .
-├── docker-compose.yml       # Servicio de PocketBase y volúmenes persistentes
-├── .env.example             # Variables de entorno de ejemplo
-├── eslint.config.mjs        # Configuración de ESLint
-├── package.json              # Scripts y dependencias de desarrollo
-├── data/                    # Declaraciones generadas/locales de PocketBase
-├── pb_data/                 # Datos persistentes de PocketBase, no versionados
+├── docker-compose.yml       # PocketBase service and persistent volumes
+├── .env.example             # Example environment variables
+├── eslint.config.mjs        # ESLint configuration
+├── package.json              # Development scripts and dependencies
+├── data/                    # Generated/local PocketBase declarations
+├── pb_data/                 # Persistent PocketBase data, not versioned
 └── pb_public/
-    ├── index.html           # Vista de lista
-    ├── post.html            # Vista de detalle
+    ├── index.html           # List view
+    ├── post.html            # Detail view
     ├── css/
     │   ├── bootstrap.min.css
     │   ├── bootstrap-icons.min.css
-    │   ├── fonts/           # Fuentes de Bootstrap Icons
-    │   └── styles.css       # Estilos propios
+    │   ├── fonts/           # Bootstrap Icons fonts
+    │   └── styles.css       # Custom styles
     └── js/
-        ├── app.js           # i18n, consulta API y renderizado
+        ├── app.js           # i18n, API queries, and rendering
         ├── bootstrap.bundle.min.js
-        └── mermaid.min.js    # Renderizado de esquemas Mermaid
+        └── mermaid.min.js    # Mermaid diagram rendering
 ```
 
-## Arquitectura
+## Architecture
 
 ```mermaid
 flowchart LR
-    browser["Navegador"]
-    index["index.html<br/>Vista de lista"]
-    post["post.html?id=...<br/>Vista de detalle"]
-    app["pb_public/js/app.js<br/>i18n + renderizado"]
+    browser["Browser"]
+    index["index.html<br/>List view"]
+    post["post.html?id=...<br/>Detail view"]
+    app["pb_public/js/app.js<br/>i18n + rendering"]
     api["PocketBase REST API<br/>/api/collections/projects/records"]
-    files["PocketBase Files<br/>capturas de pantalla"]
-    collection[("Colección projects")]
+    files["PocketBase Files<br/>screenshots"]
+    collection[("projects collection")]
     storage[("pb_data/")]
     compose["Docker Compose<br/>pocketbase-local :8100"]
 
@@ -157,26 +157,26 @@ flowchart LR
     browser --> post
     index --> app
     post --> app
-    app -->|GET lista| api
-    app -->|GET detalle| api
-    app -->|URL de screenshot| files
+    app -->|GET list| api
+    app -->|GET detail| api
+    app -->|screenshot URL| files
     api --> collection
     files --> storage
     compose --> api
     compose --> files
 ```
 
-### Flujo de navegación
+### Navigation flow
 
-1. `index.html` carga `app.js` y solicita los registros de `projects`.
-2. `app.js` prepara los datos, aplica el idioma del navegador y genera las tarjetas en un `DocumentFragment`.
-3. Cada proyecto enlaza a `post.html?id=<id>`.
-4. En la vista de detalle, `app.js` solicita un único registro y renderiza su información completa.
-5. Las capturas se resuelven mediante la ruta de archivos de PocketBase.
+1. `index.html` loads `app.js` and requests the `projects` records.
+2. `app.js` prepares the data, applies the browser language, and generates the cards in a `DocumentFragment`.
+3. Each project links to `post.html?id=<id>`.
+4. In the detail view, `app.js` requests a single record and renders its complete information.
+5. Screenshots are resolved through the PocketBase file path.
 
-## Notas de seguridad
+## Security notes
 
-- Usa una contraseña larga y única para `PB_ADMIN_PASSWORD`.
-- Mantén `.env` fuera del control de versiones.
-- Revisa las reglas de acceso de la colección `projects` antes de desplegar el proyecto públicamente.
-- No expongas el panel de administración de PocketBase sin protección adicional en un entorno de producción.
+- Use a long, unique password for `PB_ADMIN_PASSWORD`.
+- Keep `.env` out of version control.
+- Review the access rules for the `projects` collection before deploying the project publicly.
+- Do not expose the PocketBase admin dashboard without additional protection in a production environment.
