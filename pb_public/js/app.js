@@ -18,6 +18,16 @@ const i18n = {
         diagramError: "No se pudo renderizar el esquema.",
         noDiagram: "Sin esquema disponible.",
         privacyNotice: "Esta web registra datos técnicos de visita durante 7 días. Más información en la política de privacidad.",
+        privacyTitle: "Privacidad",
+        privacyBack: "Volver",
+        privacyIntro: "Esta web registra métricas técnicas de visita para conocer el uso básico del directorio y mantenerlo seguro. No utiliza cookies de analítica ni técnicas de fingerprinting.",
+        privacyDataTitle: "Datos registrados",
+        privacyDataText: "En cada visita se pueden registrar la dirección IP, la página visitada, la fecha y hora, el navegador y sistema informados por el navegador, la página de procedencia, los idiomas preferidos, la plataforma, el tamaño de pantalla y la zona horaria.",
+        privacyPurposeTitle: "Finalidad, base jurídica y conservación",
+        privacyPurposeText: "La finalidad es elaborar estadísticas agregadas de uso, detectar actividad abusiva y mejorar el funcionamiento del sitio. La base jurídica prevista es el interés legítimo del responsable, ponderado frente a los derechos de las personas, conforme al artículo 6.1.f del RGPD. Los registros se eliminan automáticamente cuando tienen más de siete días.",
+        privacyRightsTitle: "Derechos",
+        privacyRightsText: "Puedes solicitar acceso, rectificación, supresión, limitación u oposición al tratamiento, y presentar una reclamación ante la Agencia Española de Protección de Datos. Para ejercer tus derechos, contacta con el responsable del sitio mediante el canal publicado en esta web. Esta información debe completarse con la identidad y datos de contacto reales del responsable antes de publicar el sitio.",
+        privacyNote: "La dirección IP es un dato personal. Esta página es información general y debe revisarse con el responsable del tratamiento o asesoría jurídica antes de usarla como política de privacidad definitiva.",
         langLocale: "es-ES"
     },
     en: {
@@ -39,6 +49,16 @@ const i18n = {
         diagramError: "The diagram could not be rendered.",
         noDiagram: "No diagram available.",
         privacyNotice: "This website records technical visit data for 7 days. More information in the privacy policy.",
+        privacyTitle: "Privacy",
+        privacyBack: "Back",
+        privacyIntro: "This website records technical visit metrics to understand basic directory usage and keep it secure. It does not use analytics cookies or fingerprinting techniques.",
+        privacyDataTitle: "Recorded data",
+        privacyDataText: "Each visit may record the IP address, visited page, date and time, browser and operating system reported by the browser, referring page, preferred languages, platform, screen size, and time zone.",
+        privacyPurposeTitle: "Purpose, legal basis, and retention",
+        privacyPurposeText: "The purpose is to produce aggregated usage statistics, detect abusive activity, and improve the site's operation. The proposed legal basis is the data controller's legitimate interest, balanced against people's rights, under Article 6(1)(f) of the GDPR. Records are automatically deleted when they are more than seven days old.",
+        privacyRightsTitle: "Rights",
+        privacyRightsText: "You may request access, rectification, erasure, restriction, or object to the processing, and lodge a complaint with the Spanish Data Protection Agency. To exercise your rights, contact the site controller through the channel published on this website. This information must be completed with the controller's actual identity and contact details before the site is published.",
+        privacyNote: "An IP address is personal data. This page is general information and should be reviewed with the data controller or legal counsel before being used as the final privacy policy.",
         langLocale: "en-US"
     },
     fr: {
@@ -60,6 +80,16 @@ const i18n = {
         diagramError: "Impossible de rendre le schéma.",
         noDiagram: "Pas de schéma disponible.",
         privacyNotice: "Ce site enregistre des données techniques de visite pendant 7 jours. Plus d'informations dans la politique de confidentialité.",
+        privacyTitle: "Confidentialité",
+        privacyBack: "Retour",
+        privacyIntro: "Ce site enregistre des métriques techniques de visite afin de comprendre l'utilisation de base du répertoire et de le sécuriser. Il n'utilise pas de cookies analytiques ni de techniques de fingerprinting.",
+        privacyDataTitle: "Données enregistrées",
+        privacyDataText: "Lors de chaque visite, peuvent être enregistrés l'adresse IP, la page visitée, la date et l'heure, le navigateur et le système d'exploitation indiqués par le navigateur, la page d'origine, les langues préférées, la plateforme, la taille de l'écran et le fuseau horaire.",
+        privacyPurposeTitle: "Finalité, base juridique et conservation",
+        privacyPurposeText: "La finalité est de produire des statistiques d'utilisation agrégées, de détecter les activités abusives et d'améliorer le fonctionnement du site. La base juridique proposée est l'intérêt légitime du responsable du traitement, mis en balance avec les droits des personnes, conformément à l'article 6.1.f du RGPD. Les enregistrements sont automatiquement supprimés après sept jours.",
+        privacyRightsTitle: "Droits",
+        privacyRightsText: "Vous pouvez demander l'accès, la rectification, l'effacement, la limitation ou vous opposer au traitement, et déposer une réclamation auprès de l'Agence espagnole de protection des données. Pour exercer vos droits, contactez le responsable du site via le canal publié sur ce site. Ces informations doivent être complétées avec l'identité et les coordonnées réelles du responsable avant la publication du site.",
+        privacyNote: "Une adresse IP est une donnée personnelle. Cette page fournit des informations générales et doit être examinée avec le responsable du traitement ou un conseiller juridique avant d'être utilisée comme politique de confidentialité définitive.",
         langLocale: "fr-FR"
     }
 };
@@ -200,6 +230,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const lang = getBrowserLanguage();
     const t = i18n[lang];
 
+    document.documentElement.lang = lang;
+
     registrarVisita();
 
     if (window.mermaid) {
@@ -216,7 +248,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.querySelectorAll('[data-privacy-notice]').forEach(el => {
-        el.innerHTML = `${escaparHTML(t.privacyNotice)} <a href="privacy.html">${lang === 'es' ? 'Política de privacidad' : lang === 'fr' ? 'Politique de confidentialité' : 'Privacy policy'}</a>`;
+        el.innerHTML = `${escaparHTML(t.privacyNotice)}
+            <a href="privacy.html">
+            ${
+                lang === 'es' ? 'Política de privacidad' : lang === 'fr' ? 'Politique de confidentialité' : 'Privacy policy'
+            }
+            </a>`;
     });
 
     const elCargando = document.getElementById('estado-cargando');

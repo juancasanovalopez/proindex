@@ -17,10 +17,12 @@ function deleteExpiredVisitors() {
 cronAdd('cleanup-visitors', '@daily', deleteExpiredVisitors);
 
 onRecordCreateRequest((e) => {
-    const requestInfo = e.requestInfo();
-    e.record.set('ip', e.realIP());
-    e.record.set('userAgent', requestInfo.headers.user_agent || '');
-    e.record.set('referer', requestInfo.headers.referer || '');
-    e.record.set('acceptLanguage', requestInfo.headers.accept_language || '');
+    const headers = e.requestInfo().headers || {};
+    const forwardedFor = typeof headers.x_forwarded_for === 'string'
+        ? headers.x_forwarded_for
+        : '';
+    const forwardedIp = forwardedFor ? forwardedFor.split(',')[0].trim() : '';
+    const realIp = typeof headers.x_real_ip === 'string' ? headers.x_real_ip : '';
+    e.record.set('ip', forwardedIp || realIp || e.realIP());
     e.next();
 });

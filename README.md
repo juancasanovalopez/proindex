@@ -119,7 +119,7 @@ The detail view loads Mermaid locally and renders the diagram associated with th
 
 The application records each page load in the PocketBase `visitors` collection. The collection is created automatically by a native PocketBase migration. It stores the visited page path, server-captured IP address, User-Agent, referrer, accepted languages, browser language, platform, screen size, and time zone.
 
-The PocketBase server hook removes visitor records older than seven days at startup and every 24 hours. Visitor records can be created publicly by the frontend, but they cannot be listed, viewed, edited, or deleted through the public API. The server hook captures request headers and the IP address; it is loaded automatically when PocketBase starts.
+The PocketBase server hook removes visitor records older than seven days at startup and every 24 hours. Visitor records can be created publicly by the frontend, but they cannot be listed, viewed, edited, or deleted through the public API. When the site is behind Traefik, the server hook uses the first address in `X-Forwarded-For` (or `X-Real-IP`) as the visitor IP and falls back to the direct connection address. Browser metadata is sent by the frontend. The hook is loaded automatically when PocketBase starts.
 
 The collection itself is created by a native PocketBase migration, so visitor registration does not depend on an administrator login. If an existing installation was started before this migration was added, restart PocketBase once to apply it.
 
