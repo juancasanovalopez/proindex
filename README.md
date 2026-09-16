@@ -117,7 +117,7 @@ The detail view loads Mermaid locally and renders the diagram associated with th
 
 ## Visitor tracking
 
-The application records each page load in the PocketBase `visitors` collection. The collection is created automatically by the `visitor-maintenance` Docker Compose service. It stores the visited page path, server-captured IP address, User-Agent, referrer, accepted languages, browser language, platform, screen size, and time zone.
+The application records each page load in the PocketBase `visitors` collection. The collection is created automatically by a native PocketBase migration. It stores the visited page path, server-captured IP address, User-Agent, referrer, accepted languages, browser language, platform, screen size, and time zone.
 
 The PocketBase server hook removes visitor records older than seven days at startup and every 24 hours. Visitor records can be created publicly by the frontend, but they cannot be listed, viewed, edited, or deleted through the public API. The server hook captures request headers and the IP address; it is loaded automatically when PocketBase starts.
 

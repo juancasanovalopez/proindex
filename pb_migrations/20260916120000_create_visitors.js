@@ -1,5 +1,11 @@
 /// <reference path="../pb_data/types.d.ts" />
 migrate((app) => {
+    try {
+        app.findCollectionByNameOrId('visitors');
+        return;
+    } catch (_) {
+    }
+
     const collection = new Collection({
         name: 'visitors',
         type: 'base',
