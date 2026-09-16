@@ -79,6 +79,19 @@ h1 {
     max-width: 42rem;
 }
 
+.privacy-notice {
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-family: system-ui, sans-serif;
+    font-size: 0.82rem;
+    margin: -1.5rem 0 2.5rem;
+    padding-bottom: 1rem;
+}
+
+.privacy-notice a {
+    color: var(--text-main);
+}
+
 .project-list {
     display: grid;
     gap: 2.75rem;

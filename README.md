@@ -115,6 +115,12 @@ flowchart LR
 
 The detail view loads Mermaid locally and renders the diagram associated with the record. If a project does not have `schema`, the diagram section is not displayed. For compatibility with existing records, the `diagram` and `architecture` fields are also accepted, although `schema` is the recommended name.
 
+## Visitor tracking
+
+The application records each page load in the PocketBase `visitors` collection. The collection is created automatically by the `visitor-maintenance` Docker Compose service. It stores the visited page path, server-captured IP address, User-Agent, referrer, accepted languages, browser language, platform, screen size, and time zone.
+
+The maintenance service authenticates with the PocketBase administrator credentials, runs once at startup, and removes visitor records older than seven days. It then repeats the cleanup every 24 hours. Visitor records can be created publicly by the frontend, but they cannot be listed, viewed, edited, or deleted through the public API. The server hook captures request headers and the IP address; it must be enabled by restarting the PocketBase container after deployment.
+
 ## Project structure
 
 ```text
@@ -123,11 +129,14 @@ The detail view loads Mermaid locally and renders the diagram associated with th
 ├── .env.example             # Example environment variables
 ├── eslint.config.mjs        # ESLint configuration
 ├── package.json              # Development scripts and dependencies
+├── scripts/                 # Maintenance scripts
+├── pb_hooks/                 # PocketBase server hooks
 ├── data/                    # Generated/local PocketBase declarations
 ├── pb_data/                 # Persistent PocketBase data, not versioned
 └── pb_public/
     ├── index.html           # List view
     ├── post.html            # Detail view
+    ├── privacy.html         # Privacy information
     ├── css/
     │   ├── bootstrap.min.css
     │   ├── bootstrap-icons.min.css

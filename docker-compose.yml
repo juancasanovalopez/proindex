@@ -8,7 +8,22 @@ services:
     volumes:
       - ./pb_data:/pb_data
       - ./pb_public:/usr/local/bin/pb_public
+      - ./pb_hooks:/pb_hooks
     environment:
       EMAIL: ${PB_ADMIN_EMAIL:?Set PB_ADMIN_EMAIL in .env}
       ADMIN_PASSWORD: ${PB_ADMIN_PASSWORD:?Set PB_ADMIN_PASSWORD in .env}
+    restart: unless-stopped
+
+  visitor-maintenance:
+    image: node:22-alpine
+    container_name: visitor-maintenance
+    depends_on:
+      - pocketbase
+    volumes:
+      - ./scripts/visitor-maintenance.mjs:/app/visitor-maintenance.mjs:ro
+    environment:
+      PB_API_URL: http://pocketbase:8090
+      PB_ADMIN_EMAIL: ${PB_ADMIN_EMAIL:?Set PB_ADMIN_EMAIL in .env}
+      PB_ADMIN_PASSWORD: ${PB_ADMIN_PASSWORD:?Set PB_ADMIN_PASSWORD in .env}
+    command: node /app/visitor-maintenance.mjs
     restart: unless-stopped

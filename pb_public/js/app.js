@@ -17,6 +17,7 @@ const i18n = {
         architecture: "Esquema de arquitectura",
         diagramError: "No se pudo renderizar el esquema.",
         noDiagram: "Sin esquema disponible.",
+        privacyNotice: "Esta web registra datos técnicos de visita durante 7 días. Más información en la política de privacidad.",
         langLocale: "es-ES"
     },
     en: {
@@ -37,6 +38,7 @@ const i18n = {
         architecture: "Architecture diagram",
         diagramError: "The diagram could not be rendered.",
         noDiagram: "No diagram available.",
+        privacyNotice: "This website records technical visit data for 7 days. More information in the privacy policy.",
         langLocale: "en-US"
     },
     fr: {
@@ -57,11 +59,32 @@ const i18n = {
         architecture: "Schéma d'architecture",
         diagramError: "Impossible de rendre le schéma.",
         noDiagram: "Pas de schéma disponible.",
+        privacyNotice: "Ce site enregistre des données techniques de visite pendant 7 jours. Plus d'informations dans la politique de confidentialité.",
         langLocale: "fr-FR"
     }
 };
 
 const projectsApiPath = 'api/collections/projects/records';
+const visitorsApiPath = 'api/collections/visitors/records';
+
+function registrarVisita() {
+    const screenSize = window.screen ? `${window.screen.width}x${window.screen.height}` : '';
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+
+    fetch(visitorsApiPath, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            page: window.location.pathname,
+            platform: navigator.platform || '',
+            screen: screenSize,
+            timezone,
+            browserLanguage: navigator.language || '',
+            languages: Array.isArray(navigator.languages) ? navigator.languages.join(',') : ''
+        }),
+        keepalive: true
+    }).catch(() => {});
+}
 
 function getBrowserLanguage() {
     const languages = navigator.languages || [navigator.language || 'es'];
@@ -88,11 +111,16 @@ function getMultipleSelection(project, fieldName) {
 
 function recortarDescripcion(texto) {
     if (!texto) return '';
-    const palabras = texto.trim().split(/\s+/);
+
+    const textoPlano = document.createElement('div');
+    textoPlano.innerHTML = texto;
+    const palabras = (textoPlano.textContent || '').trim().split(/\s+/);
+
+    if (palabras.length === 1 && palabras[0] === '') return '';
     if (palabras.length > 50) {
         return palabras.slice(0, 50).join(' ') + '...';
     }
-    return texto;
+    return palabras.join(' ');
 }
 
 function prepararProyecto(project, lang, t, esLista = false) {
@@ -172,6 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const lang = getBrowserLanguage();
     const t = i18n[lang];
 
+    registrarVisita();
+
     if (window.mermaid) {
         window.mermaid.initialize({
             startOnLoad: false,
@@ -183,6 +213,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (t[key]) el.textContent = t[key];
+    });
+
+    document.querySelectorAll('[data-privacy-notice]').forEach(el => {
+        el.innerHTML = `${escaparHTML(t.privacyNotice)} <a href="privacy.html">${lang === 'es' ? 'Política de privacidad' : lang === 'fr' ? 'Politique de confidentialité' : 'Privacy policy'}</a>`;
     });
 
     const elCargando = document.getElementById('estado-cargando');
@@ -280,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${imagen}
                         <p class="project-badges">${projectData.progLanguagesHtml}</p>
                         <p class="project-badges">${projectData.techStackHtml}</p>
-                        <p>${projectData.description}</p>
+                        <p>${escaparHTML(projectData.description)}</p>
                     `;
                     projectFragment.appendChild(postCard);
                 });
