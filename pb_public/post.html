@@ -17,13 +17,23 @@
 
     <div class="container site-container">
         <header class="blog-header">
-            <a class="blog-nav-link" href="index.html">
+            <a class="blog-nav-link" href="./">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i>
                 <span data-i18n="allProjects"></span>
             </a>
+            <div class="dropdown style-switcher">
+                <button class="btn style-switcher-toggle dropdown-toggle" type="button" id="style-menu-post" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-palette2" aria-hidden="true"></i>
+                    <span data-i18n="styleLabel"></span>:
+                    <span data-current-style></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="style-menu-post">
+                    <li><button class="dropdown-item" type="button" role="menuitemradio" value="8bit" data-visual-style-option data-i18n="style8Bit" aria-checked="false"></button></li>
+                    <li><button class="dropdown-item" type="button" role="menuitemradio" value="16bit" data-visual-style-option data-i18n="style16Bit" aria-checked="false"></button></li>
+                    <li><button class="dropdown-item" type="button" role="menuitemradio" value="original" data-visual-style-option data-i18n="styleOriginal" aria-checked="false"></button></li>
+                </ul>
+            </div>
         </header>
-
-
 
         <div class="row g-5">
             <main id="projectos-contenido" class="project-content col-lg-8" aria-live="polite">
@@ -33,9 +43,7 @@
             </main>
         </div>
 
-        <p class="privacy-notice" data-privacy-notice></p>
-
     </div>
-
+    <p class="privacy-notice" data-privacy-notice></p>
 </body>
 </html>

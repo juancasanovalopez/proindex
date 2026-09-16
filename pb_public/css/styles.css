@@ -1,18 +1,26 @@
 :root {
-    --bg-color: #f7f4eb;
-    --text-main: #1a1a1a;
-    --text-muted: #666666;
-    --border-color: rgba(26, 26, 26, 0.2);
-    --error-bg: #f2dede;
-    --error-text: #a94442;
+    --bg-color: #11152d;
+    --surface-color: rgba(26, 31, 65, 0.82);
+    --surface-strong: #20275a;
+    --text-main: #f8f4ff;
+    --text-muted: #adb5e8;
+    --accent-color: #ffcb5c;
+    --accent-strong: #ff5d8f;
+    --border-color: rgba(151, 170, 255, 0.42);
+    --shadow-color: rgba(0, 0, 0, 0.35);
+    --error-bg: #5a243f;
+    --error-text: #ffd6df;
 }
 
 body {
     background-color: var(--bg-color);
-    background-image: linear-gradient(rgba(26, 26, 26, 0.025) 1px, transparent 1px);
-    background-size: 100% 1.75rem;
+    background-image: linear-gradient(135deg, rgba(255, 93, 143, 0.16), transparent 34%),
+        linear-gradient(315deg, rgba(84, 218, 255, 0.12), transparent 38%),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 5rem);
+    background-attachment: fixed;
+    background-size: cover, cover, auto;
     color: var(--text-main);
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: "Trebuchet MS", Verdana, sans-serif;
     line-height: 1.6;
     margin: 0;
     padding: 0;
@@ -27,7 +35,7 @@ body {
 
 .blog-header {
     align-items: center;
-    border-bottom: 1px solid var(--text-main);
+    border-bottom: 2px solid var(--accent-color);
     display: flex;
     justify-content: space-between;
     margin-bottom: 3rem;
@@ -41,23 +49,27 @@ body {
 }
 
 .blog-brand {
-    font-size: 1.35rem;
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    letter-spacing: 0.08em;
     font-weight: 700;
 }
 
 .blog-nav-link {
-    border-bottom: 1px solid currentColor;
-    font-family: system-ui, sans-serif;
+    border: 1px solid var(--border-color);
+    font-family: "Trebuchet MS", Verdana, sans-serif;
     font-size: 0.8rem;
     font-weight: 700;
-    padding-bottom: 0.15rem;
+    padding: 0.45rem 0.7rem;
     text-transform: uppercase;
 }
 
 .blog-intro {
-    border-bottom: 1px solid var(--border-color);
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0.5rem 0.5rem 0 var(--shadow-color);
     margin-bottom: 3rem;
-    padding-bottom: 2.5rem;
+    padding: 2rem;
 }
 
 h1,
@@ -67,29 +79,41 @@ h2 {
 }
 
 h1 {
-    font-size: 3rem;
+    color: var(--accent-color);
+    font-size: clamp(2.25rem, 5vw, 4.5rem);
+    letter-spacing: 0.02em;
     margin-bottom: 0.5rem;
 }
 
 .subtitle {
     color: var(--text-muted);
-    font-size: 1.2rem;
-    font-style: italic;
+    font-size: 1.1rem;
     margin: 0;
     max-width: 42rem;
 }
 
 .privacy-notice {
-    border-bottom: 1px solid var(--border-color);
+    background: rgba(16, 20, 46, 0.72);
+    border: 1px solid var(--border-color);
     color: var(--text-muted);
     font-family: system-ui, sans-serif;
     font-size: 0.82rem;
-    margin: -1.5rem 0 2.5rem;
-    padding-bottom: 1rem;
+    margin: -1rem 0 2.5rem;
+    padding: 0.8rem 1rem;
 }
 
 .privacy-notice a {
-    color: var(--text-main);
+    color: var(--accent-color);
+}
+
+.style-switcher {
+    align-items: center;
+    border: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
 }
 
 .project-list {
@@ -99,9 +123,11 @@ h1 {
 
 .project-item,
 .project-detail {
-    border-bottom: 1px solid var(--border-color);
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0.45rem 0.45rem 0 var(--shadow-color);
     min-width: 0;
-    padding-bottom: 2.75rem;
+    padding: 1.5rem;
 }
 
 .project-item h2,
@@ -113,7 +139,7 @@ h1 {
 
 .project-title-link {
     color: var(--text-main);
-    text-decoration-color: rgba(26, 26, 26, 0.35);
+    text-decoration-color: var(--accent-color);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.18em;
 }
@@ -128,15 +154,26 @@ h1 {
     width: 100%;
 }
 
+.project-image {
+    border: 1px solid var(--border-color);
+    box-shadow: 0.3rem 0.3rem 0 var(--shadow-color);
+}
+
 .project-image-link {
     display: block;
 }
 
 .project-item p,
-.project-description-full p {
-    color: #333333;
+.project-description {
+    color: var(--text-muted);
     font-size: 1.05rem;
     margin: 0 0 1.25rem;
+}
+
+.project-description p,
+.project-description ul,
+.project-description ol {
+    margin-bottom: 1.25rem;
 }
 
 .project-badges {
@@ -146,7 +183,7 @@ h1 {
 }
 
 .project-links-card {
-    background: transparent;
+    background: rgba(15, 19, 45, 0.65);
     border: 1px solid var(--border-color);
     border-radius: 0;
     margin-top: 1.5rem;
@@ -167,7 +204,7 @@ h1 {
 }
 
 .project-diagram-canvas {
-    background: rgba(255, 255, 255, 0.35);
+    background: rgba(8, 12, 31, 0.68);
     border: 1px solid var(--border-color);
     min-height: 12rem;
     overflow-x: auto;
@@ -207,8 +244,8 @@ h1 {
 
 .project-link:hover,
 .project-link:focus-visible {
-    background-color: var(--text-main);
-    color: var(--bg-color);
+    background-color: var(--accent-strong);
+    color: #ffffff;
 }
 
 .blog-sidebar {
@@ -216,7 +253,7 @@ h1 {
 }
 
 .blog-sidebar nav {
-    border-top: 3px solid var(--text-main);
+    border-top: 3px solid var(--accent-color);
     padding-top: 0.75rem;
 }
 
@@ -242,6 +279,177 @@ h1 {
 .error-message { background: var(--error-bg); color: var(--error-text); font-family: system-ui, sans-serif; font-size: 0.85rem; font-weight: 600; padding: 1rem; }
 .hidden { display: none !important; }
 
+/* 8-bit mode: hard edges, limited palette, and no gradients. */
+:root[data-visual-style="8bit"] {
+    --bg-color: #f4e8b8;
+    --surface-color: #fff6d5;
+    --surface-strong: #d94f4f;
+    --text-main: #17152b;
+    --text-muted: #51465a;
+    --accent-color: #d94f4f;
+    --accent-strong: #2d6cdf;
+    --border-color: #17152b;
+    --shadow-color: #17152b;
+    --error-bg: #f3b4a8;
+    --error-text: #5c1e2b;
+}
+
+:root[data-visual-style="8bit"] body {
+    background-image: none;
+    font-family: "Courier New", monospace;
+    image-rendering: pixelated;
+}
+
+:root[data-visual-style="8bit"] .blog-header {
+    border-bottom-width: 4px;
+}
+
+:root[data-visual-style="8bit"] .blog-brand,
+:root[data-visual-style="8bit"] h1 {
+    color: var(--accent-color);
+    text-shadow: 3px 3px 0 var(--shadow-color);
+}
+
+:root[data-visual-style="8bit"] .blog-intro,
+:root[data-visual-style="8bit"] .project-item,
+:root[data-visual-style="8bit"] .project-detail {
+    border: 3px solid var(--border-color);
+    border-radius: 0;
+    box-shadow: 6px 6px 0 var(--shadow-color);
+}
+
+:root[data-visual-style="8bit"] .project-image,
+:root[data-visual-style="8bit"] .project-image-full {
+    image-rendering: pixelated;
+}
+
+:root[data-visual-style="8bit"] .project-link,
+:root[data-visual-style="8bit"] .project-links-card,
+:root[data-visual-style="8bit"] .project-diagram-canvas {
+    border-width: 3px;
+    border-radius: 0;
+}
+
+/* 16-bit mode: richer color, layered depth, and a soft arcade glow. */
+:root[data-visual-style="16bit"] .project-item,
+:root[data-visual-style="16bit"] .project-detail {
+    border-radius: 0.65rem;
+}
+
+:root[data-visual-style="16bit"] .project-image {
+    border-radius: 0.35rem;
+}
+
+/* Original mode: restrained editorial layout with functional hierarchy. */
+:root[data-visual-style="original"] {
+    --bg-color: #f7f4eb;
+    --surface-color: transparent;
+    --surface-strong: #1a1a1a;
+    --text-main: #1a1a1a;
+    --text-muted: #666666;
+    --accent-color: #1a1a1a;
+    --accent-strong: #1a1a1a;
+    --border-color: rgba(26, 26, 26, 0.2);
+    --shadow-color: transparent;
+    --error-bg: #f2dede;
+    --error-text: #a94442;
+}
+
+:root[data-visual-style="original"] body {
+    background-attachment: initial;
+    background-image: linear-gradient(rgba(26, 26, 26, 0.025) 1px, transparent 1px);
+    background-size: 100% 1.75rem;
+    color: var(--text-main);
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+:root[data-visual-style="original"] .blog-header {
+    border-bottom: 1px solid var(--text-main);
+}
+
+:root[data-visual-style="original"] .blog-brand {
+    color: var(--text-main);
+    font-size: 1.35rem;
+    letter-spacing: 0;
+}
+
+:root[data-visual-style="original"] .blog-nav-link {
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    font-family: system-ui, sans-serif;
+    padding: 0 0 0.15rem;
+}
+
+:root[data-visual-style="original"] .blog-intro {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: none;
+    padding: 0 0 2.5rem;
+}
+
+:root[data-visual-style="original"] h1 {
+    color: var(--text-main);
+    font-size: 3rem;
+    letter-spacing: 0;
+}
+
+:root[data-visual-style="original"] .subtitle {
+    font-size: 1.2rem;
+    font-style: italic;
+}
+
+:root[data-visual-style="original"] .privacy-notice {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--border-color);
+    margin: -1.5rem 0 2.5rem;
+    padding: 0 0 1rem;
+}
+
+:root[data-visual-style="original"] .privacy-notice a,
+:root[data-visual-style="original"] .project-title-link {
+    color: var(--text-main);
+}
+
+:root[data-visual-style="original"] .project-item,
+:root[data-visual-style="original"] .project-detail {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0 0 2.75rem;
+}
+
+:root[data-visual-style="original"] .project-image {
+    border: 0;
+    box-shadow: none;
+}
+
+:root[data-visual-style="original"] .project-item p,
+:root[data-visual-style="original"] .project-description {
+    color: #333333;
+}
+
+:root[data-visual-style="original"] .project-links-card {
+    background: transparent;
+}
+
+:root[data-visual-style="original"] .project-diagram-canvas {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+:root[data-visual-style="original"] .project-link {
+    color: var(--text-main);
+}
+
+:root[data-visual-style="original"] .project-link:hover,
+:root[data-visual-style="original"] .project-link:focus-visible {
+    background-color: var(--text-main);
+    color: var(--bg-color);
+}
+
 @media (min-width: 992px) {
     .blog-sidebar nav {
         position: sticky;
@@ -264,6 +472,11 @@ h1 {
         padding-bottom: 1.75rem;
     }
 
+    .style-switcher {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
     h1 {
         font-size: 2.25rem;
     }
@@ -273,8 +486,13 @@ h1 {
         font-size: 1.7rem;
     }
 
+    .project-item,
+    .project-detail {
+        padding: 1.1rem;
+    }
+
     .project-item p,
-    .project-description-full p {
+    .project-description {
         font-size: 1rem;
     }
 
@@ -304,5 +522,267 @@ h1 {
 
     h1 {
         font-size: 1.9rem;
+    }
+}
+
+/* Header dropdown: one compact control, with the current mode always visible. */
+.style-switcher.dropdown {
+    align-items: initial;
+    display: block;
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+.style-switcher-toggle {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 0;
+    color: var(--text-main);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 0.5rem 0.7rem;
+    text-transform: uppercase;
+}
+
+.style-switcher-toggle:hover,
+.style-switcher-toggle:focus-visible,
+.style-switcher-toggle[aria-expanded="true"] {
+    background: var(--surface-strong);
+    border-color: var(--accent-color);
+    color: var(--text-main);
+}
+
+.style-switcher .dropdown-menu {
+    background: var(--surface-strong);
+    border: 1px solid var(--border-color);
+    border-radius: 0;
+    box-shadow: 0.35rem 0.35rem 0 var(--shadow-color);
+    min-width: 10rem;
+    padding: 0.35rem;
+}
+
+.style-switcher .dropdown-item {
+    color: var(--text-main);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.6rem 0.7rem;
+    text-transform: uppercase;
+}
+
+.style-switcher .dropdown-item:hover,
+.style-switcher .dropdown-item:focus-visible,
+.style-switcher .dropdown-item.active,
+.style-switcher .dropdown-item:active {
+    background: var(--accent-color);
+    color: #10142e;
+}
+
+.style-switcher .dropdown-item.active::before {
+    content: "- ";
+}
+
+:root[data-visual-style="8bit"] .style-switcher-toggle,
+:root[data-visual-style="8bit"] .style-switcher .dropdown-menu {
+    border-width: 3px;
+}
+
+:root[data-visual-style="8bit"] .style-switcher .dropdown-menu {
+    box-shadow: 4px 4px 0 var(--shadow-color);
+}
+
+:root[data-visual-style="original"] .style-switcher-toggle {
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    font-family: system-ui, sans-serif;
+    font-weight: 700;
+    padding: 0 0 0.15rem;
+}
+
+:root[data-visual-style="original"] .style-switcher-toggle:hover,
+:root[data-visual-style="original"] .style-switcher-toggle:focus-visible,
+:root[data-visual-style="original"] .style-switcher-toggle[aria-expanded="true"] {
+    background: transparent;
+    border-color: var(--text-main);
+    color: var(--text-main);
+}
+
+:root[data-visual-style="original"] .style-switcher .dropdown-menu {
+    background: var(--bg-color);
+    box-shadow: 0 0.35rem 1rem rgba(26, 26, 26, 0.14);
+}
+
+:root[data-visual-style="original"] .style-switcher .dropdown-item {
+    font-family: system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+@media (max-width: 767.98px) {
+    .blog-header {
+        flex-wrap: wrap;
+        gap: 0.8rem;
+    }
+
+    .style-switcher.dropdown {
+        margin-left: auto;
+    }
+}
+
+/* 16-bit mode: SNES-inspired title screen and HUD panels. */
+:root[data-visual-style="16bit"] {
+    --bg-color: #101b42;
+    --surface-color: rgba(24, 42, 89, 0.94);
+    --surface-strong: #2e4f91;
+    --text-main: #fff8dc;
+    --text-muted: #c6d5f2;
+    --accent-color: #ffd15c;
+    --accent-strong: #ef6d86;
+    --border-color: #6e9ed1;
+    --shadow-color: #07132e;
+    --error-bg: #6b2949;
+    --error-text: #ffe1e7;
+}
+
+:root[data-visual-style="16bit"] body {
+    background-image: linear-gradient(180deg, rgba(53, 85, 153, 0.32), transparent 38%),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 2px, transparent 2px 6px),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0 2px, transparent 2px 6px);
+    font-family: "Trebuchet MS", Verdana, sans-serif;
+}
+
+:root[data-visual-style="16bit"] .blog-header {
+    border-bottom: 4px solid var(--accent-color);
+    box-shadow: 0 5px 0 rgba(7, 19, 46, 0.7);
+    margin-bottom: 2.4rem;
+}
+
+:root[data-visual-style="16bit"] .blog-brand,
+:root[data-visual-style="16bit"] h1 {
+    color: var(--accent-color);
+    text-shadow: 3px 3px 0 var(--shadow-color);
+}
+
+:root[data-visual-style="16bit"] .blog-intro {
+    border: 2px solid var(--border-color);
+    box-shadow: 8px 8px 0 var(--shadow-color);
+    padding: 2.25rem;
+}
+
+:root[data-visual-style="16bit"] .subtitle,
+:root[data-visual-style="16bit"] .project-item p,
+:root[data-visual-style="16bit"] .project-description {
+    color: var(--text-muted);
+}
+
+:root[data-visual-style="16bit"] .project-item,
+:root[data-visual-style="16bit"] .project-detail {
+    border: 2px solid var(--border-color);
+    border-radius: 0.35rem;
+    box-shadow: 6px 6px 0 var(--shadow-color);
+}
+
+:root[data-visual-style="16bit"] .project-item h2,
+:root[data-visual-style="16bit"] .project-detail h1 {
+    color: var(--text-main);
+}
+
+:root[data-visual-style="16bit"] .project-title-link {
+    text-decoration-color: var(--accent-color);
+}
+
+:root[data-visual-style="16bit"] .project-image,
+:root[data-visual-style="16bit"] .project-image-full {
+    border: 2px solid var(--border-color);
+    box-shadow: 4px 4px 0 var(--shadow-color);
+}
+
+:root[data-visual-style="16bit"] .project-badges .badge {
+    background: #315d9e !important;
+    border: 1px solid #8bb7e4;
+    color: #fff8dc !important;
+    font-weight: 700;
+}
+
+:root[data-visual-style="16bit"] .project-links-card {
+    background: rgba(11, 24, 59, 0.78);
+    border: 2px solid var(--border-color);
+}
+
+:root[data-visual-style="16bit"] .project-link {
+    background: #203e7a;
+    border: 2px solid #6e9ed1;
+    color: var(--text-main);
+}
+
+:root[data-visual-style="16bit"] .project-link:hover,
+:root[data-visual-style="16bit"] .project-link:focus-visible {
+    background: var(--accent-color);
+    color: #152653;
+}
+
+:root[data-visual-style="16bit"] .project-diagram {
+    border-top: 2px solid var(--border-color);
+}
+
+:root[data-visual-style="16bit"] .project-diagram-canvas {
+    background: #0b183b;
+    border: 2px solid var(--border-color);
+    box-shadow: inset 0 0 0 3px rgba(7, 19, 46, 0.65);
+}
+
+:root[data-visual-style="16bit"] .project-diagram-canvas svg text,
+:root[data-visual-style="16bit"] .project-diagram-canvas svg tspan {
+    fill: var(--text-main);
+}
+
+:root[data-visual-style="16bit"] .privacy-notice {
+    background: rgba(11, 24, 59, 0.78);
+    border: 2px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+:root[data-visual-style="16bit"] .style-switcher-toggle {
+    background: #203e7a;
+    border: 2px solid var(--border-color);
+    box-shadow: 3px 3px 0 var(--shadow-color);
+    color: var(--text-main);
+}
+
+:root[data-visual-style="16bit"] .style-switcher-toggle:hover,
+:root[data-visual-style="16bit"] .style-switcher-toggle:focus-visible,
+:root[data-visual-style="16bit"] .style-switcher-toggle[aria-expanded="true"] {
+    background: var(--accent-color);
+    color: #152653;
+}
+
+:root[data-visual-style="16bit"] .style-switcher .dropdown-menu {
+    background: #182f67;
+    border: 2px solid var(--border-color);
+    box-shadow: 5px 5px 0 var(--shadow-color);
+}
+
+:root[data-visual-style="16bit"] .style-switcher .dropdown-item {
+    color: var(--text-main);
+}
+
+:root[data-visual-style="16bit"] .style-switcher .dropdown-item:hover,
+:root[data-visual-style="16bit"] .style-switcher .dropdown-item:focus-visible,
+:root[data-visual-style="16bit"] .style-switcher .dropdown-item.active,
+:root[data-visual-style="16bit"] .style-switcher .dropdown-item:active {
+    background: var(--accent-color);
+    color: #152653;
+}
+
+@media (max-width: 767.98px) {
+    :root[data-visual-style="16bit"] .blog-intro {
+        padding: 1.4rem;
+    }
+
+    :root[data-visual-style="16bit"] .project-item,
+    :root[data-visual-style="16bit"] .project-detail {
+        box-shadow: 4px 4px 0 var(--shadow-color);
     }
 }

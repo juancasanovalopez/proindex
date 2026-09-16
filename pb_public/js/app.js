@@ -29,6 +29,10 @@ const i18n = {
         privacyRightsTitle: "Derechos",
         privacyRightsText: "Puedes solicitar acceso, rectificación, supresión, limitación u oposición al tratamiento, y presentar una reclamación ante la Agencia Española de Protección de Datos. Para ejercer tus derechos, contacta con el responsable del sitio mediante el canal publicado en esta web. Esta información debe completarse con la identidad y datos de contacto reales del responsable antes de publicar el sitio.",
         privacyNote: "La dirección IP es un dato personal. Esta página es información general y debe revisarse con el responsable del tratamiento o asesoría jurídica antes de usarla como política de privacidad definitiva.",
+        styleLabel: "Estilo visual",
+        style8Bit: "8-bit",
+        style16Bit: "16-bit",
+        styleOriginal: "Original",
         langLocale: "es-ES"
     },
     en: {
@@ -61,6 +65,10 @@ const i18n = {
         privacyRightsTitle: "Rights",
         privacyRightsText: "You may request access, rectification, erasure, restriction, or object to the processing, and lodge a complaint with the Spanish Data Protection Agency. To exercise your rights, contact the site controller through the channel published on this website. This information must be completed with the controller's actual identity and contact details before the site is published.",
         privacyNote: "An IP address is personal data. This page is general information and should be reviewed with the data controller or legal counsel before being used as the final privacy policy.",
+        styleLabel: "Visual style",
+        style8Bit: "8-bit",
+        style16Bit: "16-bit",
+        styleOriginal: "Original",
         langLocale: "en-US"
     },
     fr: {
@@ -93,12 +101,45 @@ const i18n = {
         privacyRightsTitle: "Droits",
         privacyRightsText: "Vous pouvez demander l'accès, la rectification, l'effacement, la limitation ou vous opposer au traitement, et déposer une réclamation auprès de l'Agence espagnole de protection des données. Pour exercer vos droits, contactez le responsable du site via le canal publié sur ce site. Ces informations doivent être complétées avec l'identité et les coordonnées réelles du responsable avant la publication du site.",
         privacyNote: "Une adresse IP est une donnée personnelle. Cette page fournit des informations générales et doit être examinée avec le responsable du traitement ou un conseiller juridique avant d'être utilisée comme politique de confidentialité définitive.",
+        styleLabel: "Style visuel",
+        style8Bit: "8-bit",
+        style16Bit: "16-bit",
+        styleOriginal: "Original",
         langLocale: "fr-FR"
     }
 };
 
 const projectsApiPath = 'api/collections/projects/records';
 const visitorsApiPath = 'api/collections/visitors/records';
+const visualStyleStorageKey = 'pro-index-visual-style';
+
+function applyVisualStyle(style) {
+    const selectedStyle = ['original', '8bit', '16bit'].includes(style) ? style : 'original';
+    document.documentElement.dataset.visualStyle = selectedStyle;
+    document.querySelectorAll('[data-visual-style-option]').forEach(option => {
+        const isSelected = option.value === selectedStyle;
+        option.classList.toggle('active', isSelected);
+        option.setAttribute('aria-checked', String(isSelected));
+
+        if (isSelected) {
+            const currentStyle = option.closest('.style-switcher')?.querySelector('[data-current-style]');
+            if (currentStyle) currentStyle.textContent = option.textContent.trim();
+        }
+    });
+}
+
+function initializeVisualStyle() {
+    const storedStyle = window.localStorage.getItem(visualStyleStorageKey) || 'original';
+    applyVisualStyle(storedStyle);
+
+    document.querySelectorAll('[data-visual-style-option]').forEach(option => {
+        option.addEventListener('click', event => {
+            const selectedStyle = event.target.value;
+            window.localStorage.setItem(visualStyleStorageKey, selectedStyle);
+            applyVisualStyle(selectedStyle);
+        });
+    });
+}
 
 function registrarVisita() {
     const screenSize = window.screen ? `${window.screen.width}x${window.screen.height}` : '';
@@ -162,6 +203,44 @@ function recortarDescripcion(texto) {
     return palabras.join(' ');
 }
 
+function renderizarDescripcion(element, html) {
+    const template = document.createElement('template');
+    template.innerHTML = String(html || '');
+
+    const allowedTags = new Set(['A', 'B', 'BR', 'EM', 'I', 'LI', 'OL', 'P', 'STRONG', 'U', 'UL']);
+
+    function appendSafeNodes(parent, source) {
+        source.childNodes.forEach(node => {
+            if (node.nodeType === 3) {
+                parent.appendChild(document.createTextNode(node.nodeValue));
+                return;
+            }
+
+            if (node.nodeType !== 1) return;
+
+            const tagName = node.tagName.toUpperCase();
+            if (!allowedTags.has(tagName)) {
+                appendSafeNodes(parent, node);
+                return;
+            }
+
+            const safeNode = document.createElement(tagName.toLowerCase());
+            if (tagName === 'A') {
+                const href = node.getAttribute('href') || '';
+                if (/^https?:\/\//i.test(href)) {
+                    safeNode.href = href;
+                    safeNode.target = '_blank';
+                    safeNode.rel = 'noopener noreferrer';
+                }
+            }
+            parent.appendChild(safeNode);
+            appendSafeNodes(safeNode, node);
+        });
+    }
+
+    appendSafeNodes(element, template.content);
+}
+
 function prepararProyecto(project, lang, t, esLista = false) {
     const name = project.name || 'Proyecto';
     const descriptionFull = project[`description_${lang}`] || t.noDesc;
@@ -178,7 +257,7 @@ function prepararProyecto(project, lang, t, esLista = false) {
         diagram: project.arch_schema || t.noDiagram,
         progLanguagesHtml: renderBadges(progLanguages),
         techStackHtml: renderBadges(techStack, true),
-        postDetailUrl: esLista ? `post.html?id=${encodeURIComponent(project.id)}` : ''
+        postDetailUrl: esLista ? `./post.html?id=${encodeURIComponent(project.id)}` : ''
     };
 }
 
@@ -244,7 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const t = i18n[lang];
 
     document.documentElement.lang = lang;
-
     registrarVisita();
 
     if (window.mermaid) {
@@ -260,10 +338,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (t[key]) el.textContent = t[key];
     });
 
+    initializeVisualStyle();
+
     document.querySelectorAll('[data-privacy-notice]').forEach(el => {
         el.textContent = `${t.privacyNotice} `;
         const privacyLink = document.createElement('a');
-        privacyLink.href = 'privacy.html';
+        privacyLink.href = './privacy.html';
         privacyLink.textContent = lang === 'es'
             ? 'Política de privacidad'
             : lang === 'fr'
@@ -306,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="project-badges">${projectData.progLanguagesHtml}</p>
                     <p class="project-badges">${projectData.techStackHtml}</p>
                     <div class="project-description-full">
-                        <p>${escaparHTML(projectData.descriptionFull)}</p>
+                        <div class="project-description" data-project-description></div>
                     </div>
                     <section class="project-diagram" aria-labelledby="project-diagram-title">
                         <h2 id="project-diagram-title">${t.architecture}</h2>
@@ -314,6 +394,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     </section>
                     ${renderProjectLinks(projectData, t)}
                 `;
+                renderizarDescripcion(
+                    postCard.querySelector('[data-project-description]'),
+                    projectData.descriptionFull
+                );
                 elPost.appendChild(postCard);
                 renderProjectDiagram(
                     postCard.querySelector('.project-diagram-canvas'),
@@ -367,8 +451,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${imagen}
                         <p class="project-badges">${projectData.progLanguagesHtml}</p>
                         <p class="project-badges">${projectData.techStackHtml}</p>
-                        <p>${escaparHTML(projectData.description)}</p>
+                        <div class="project-description" data-project-description></div>
                     `;
+                    renderizarDescripcion(
+                        postCard.querySelector('[data-project-description]'),
+                        projectData.description
+                    );
                     projectFragment.appendChild(postCard);
                 });
                 elLista.appendChild(projectFragment);
