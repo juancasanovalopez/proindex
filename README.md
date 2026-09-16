@@ -119,7 +119,9 @@ The detail view loads Mermaid locally and renders the diagram associated with th
 
 The application records each page load in the PocketBase `visitors` collection. The collection is created automatically by the `visitor-maintenance` Docker Compose service. It stores the visited page path, server-captured IP address, User-Agent, referrer, accepted languages, browser language, platform, screen size, and time zone.
 
-The maintenance service authenticates with the PocketBase administrator credentials, runs once at startup, and removes visitor records older than seven days. It then repeats the cleanup every 24 hours. Visitor records can be created publicly by the frontend, but they cannot be listed, viewed, edited, or deleted through the public API. The server hook captures request headers and the IP address; it must be enabled by restarting the PocketBase container after deployment.
+The PocketBase server hook removes visitor records older than seven days at startup and every 24 hours. Visitor records can be created publicly by the frontend, but they cannot be listed, viewed, edited, or deleted through the public API. The server hook captures request headers and the IP address; it is loaded automatically when PocketBase starts.
+
+The collection itself is created by a native PocketBase migration, so visitor registration does not depend on an administrator login. If an existing installation was started before this migration was added, restart PocketBase once to apply it.
 
 ## Project structure
 
@@ -129,8 +131,8 @@ The maintenance service authenticates with the PocketBase administrator credenti
 ├── .env.example             # Example environment variables
 ├── eslint.config.mjs        # ESLint configuration
 ├── package.json              # Development scripts and dependencies
-├── scripts/                 # Maintenance scripts
 ├── pb_hooks/                 # PocketBase server hooks
+├── pb_migrations/            # PocketBase schema migrations
 ├── data/                    # Generated/local PocketBase declarations
 ├── pb_data/                 # Persistent PocketBase data, not versioned
 └── pb_public/
