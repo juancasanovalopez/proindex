@@ -18,7 +18,11 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
+            set -euo pipefail
+            test -d /home/deployproindex/proindex
             cd /home/deployproindex/proindex
-            git pull origin main
-            docker compose down
-            docker compose up -d
+            git pull --ff-only origin main
+            docker compose config --quiet
+            docker compose up -d --remove-orphans
+            docker compose ps
+            test "$(docker inspect --format='{{.State.Health.Status}}' pocketbase-local)" = healthy

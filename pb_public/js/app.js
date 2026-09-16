@@ -1,6 +1,7 @@
 const i18n = {
     es: {
         title: "Portfolio",
+        postTitle: "Portfolio | Proyecto",
         directory: "Directorio",
         allProjects: "Todos los proyectos",
         subtitle: "Una lista pública de recursos compartidos",
@@ -32,6 +33,7 @@ const i18n = {
     },
     en: {
         title: "Portfolio",
+        postTitle: "Portfolio | Project",
         directory: "Directory",
         allProjects: "All projects",
         subtitle: "A public list of shared resources",
@@ -63,6 +65,7 @@ const i18n = {
     },
     fr: {
         title: "Portfolio",
+        postTitle: "Portfolio | Projet",
         directory: "Répertoire",
         allProjects: "Tous les projets",
         subtitle: "Une liste publique de ressources partagées",
@@ -113,7 +116,9 @@ function registrarVisita() {
             languages: Array.isArray(navigator.languages) ? navigator.languages.join(',') : ''
         }),
         keepalive: true
-    }).catch(() => {});
+    }).catch(error => {
+        console.error('No se pudo registrar la visita.', error);
+    });
 }
 
 function getBrowserLanguage() {
@@ -126,9 +131,13 @@ function getBrowserLanguage() {
 }
 
 function getScreenshotUrl(project) {
-    if (!project.screenshot) return '';
+    const screenshot = Array.isArray(project.screenshot)
+        ? project.screenshot[0]
+        : project.screenshot;
 
-    return `api/files/${encodeURIComponent(project.collectionId)}/${encodeURIComponent(project.id)}/${encodeURIComponent(project.screenshot)}`;
+    if (typeof screenshot !== 'string' || !screenshot.trim()) return '';
+
+    return `api/files/${encodeURIComponent(project.collectionId)}/${encodeURIComponent(project.id)}/${encodeURIComponent(screenshot)}`;
 }
 
 function getMultipleSelection(project, fieldName) {
@@ -216,6 +225,10 @@ async function renderProjectDiagram(container, diagram, t) {
         return;
     }
 
+    if (typeof diagram !== 'string' || diagram.length > 10000 || /<\/?script|\bon\w+\s*=|javascript:/i.test(diagram)) {
+        throw new Error('Invalid diagram content');
+    }
+
     if (!window.mermaid) {
         container.textContent = t.diagramError;
         return;
@@ -248,12 +261,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.querySelectorAll('[data-privacy-notice]').forEach(el => {
-        el.innerHTML = `${escaparHTML(t.privacyNotice)}
-            <a href="privacy.html">
-            ${
-                lang === 'es' ? 'Política de privacidad' : lang === 'fr' ? 'Politique de confidentialité' : 'Privacy policy'
-            }
-            </a>`;
+        el.textContent = `${t.privacyNotice} `;
+        const privacyLink = document.createElement('a');
+        privacyLink.href = 'privacy.html';
+        privacyLink.textContent = lang === 'es'
+            ? 'Política de privacidad'
+            : lang === 'fr'
+                ? 'Politique de confidentialité'
+                : 'Privacy policy';
+        el.appendChild(privacyLink);
     });
 
     const elCargando = document.getElementById('estado-cargando');
@@ -290,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="project-badges">${projectData.progLanguagesHtml}</p>
                     <p class="project-badges">${projectData.techStackHtml}</p>
                     <div class="project-description-full">
-                        <p>${projectData.descriptionFull}</p>
+                        <p>${escaparHTML(projectData.descriptionFull)}</p>
                     </div>
                     <section class="project-diagram" aria-labelledby="project-diagram-title">
                         <h2 id="project-diagram-title">${t.architecture}</h2>

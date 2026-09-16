@@ -1,16 +1,20 @@
 function deleteExpiredVisitors() {
     const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-    const visitors = $app.findRecordsByFilter(
-        'visitors',
-        'created < {:cutoff}',
-        '-created',
-        200,
-        0,
-        { cutoff }
-    );
+    for (;;) {
+        const visitors = $app.findRecordsByFilter(
+            'visitors',
+            'created < {:cutoff}',
+            '-created',
+            200,
+            0,
+            { cutoff }
+        );
 
-    for (const visitor of visitors) {
-        $app.delete(visitor);
+        if (visitors.length === 0) return;
+
+        for (const visitor of visitors) {
+            $app.delete(visitor);
+        }
     }
 }
 
