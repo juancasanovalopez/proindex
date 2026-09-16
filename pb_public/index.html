@@ -20,8 +20,6 @@
             <div class="dropdown style-switcher">
                 <button class="btn style-switcher-toggle dropdown-toggle" type="button" id="style-menu-index" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-palette2" aria-hidden="true"></i>
-                    <span data-i18n="styleLabel"></span>:
-                    <span data-current-style></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="style-menu-index">
                     <li><button class="dropdown-item" type="button" role="menuitemradio" value="8bit" data-visual-style-option data-i18n="style8Bit" aria-checked="false"></button></li>
@@ -38,16 +36,13 @@
 
 
         <div class="row g-5">
-            <main id="proyectos-lista" class="project-list col-lg-8" aria-live="polite">
+            <main id="proyectos-lista" class="project-list col-lg-12" aria-live="polite">
                 <div id="estado-cargando" class="status" data-i18n="loading"></div>
                 <div id="estado-error" class="error-message hidden" data-i18n="error"></div>
                 <div id="estado-vacio" class="status hidden" data-i18n="empty"></div>
             </main>
 
-
         </div>
-
-
 
     </div>
     <p class="privacy-notice" data-privacy-notice></p>
