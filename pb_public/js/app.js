@@ -30,7 +30,6 @@ const i18n = {
         privacyRightsText: "Puedes solicitar acceso, rectificación, supresión, limitación u oposición al tratamiento, y presentar una reclamación ante la Agencia Española de Protección de Datos. Para ejercer tus derechos, contacta con el responsable del sitio mediante el canal publicado en esta web. Esta información debe completarse con la identidad y datos de contacto reales del responsable antes de publicar el sitio.",
         privacyNote: "La dirección IP es un dato personal. Esta página es información general y debe revisarse con el responsable del tratamiento o asesoría jurídica antes de usarla como política de privacidad definitiva.",
         styleLabel: "",
-        style8Bit: "8-bit",
         style16Bit: "16-bit",
         styleOriginal: "Original",
         langLocale: "es-ES"
@@ -66,7 +65,6 @@ const i18n = {
         privacyRightsText: "You may request access, rectification, erasure, restriction, or object to the processing, and lodge a complaint with the Spanish Data Protection Agency. To exercise your rights, contact the site controller through the channel published on this website. This information must be completed with the controller's actual identity and contact details before the site is published.",
         privacyNote: "An IP address is personal data. This page is general information and should be reviewed with the data controller or legal counsel before being used as the final privacy policy.",
         styleLabel: "",
-        style8Bit: "8-bit",
         style16Bit: "16-bit",
         styleOriginal: "Original",
         langLocale: "en-US"
@@ -102,7 +100,6 @@ const i18n = {
         privacyRightsText: "Vous pouvez demander l'accès, la rectification, l'effacement, la limitation ou vous opposer au traitement, et déposer une réclamation auprès de l'Agence espagnole de protection des données. Pour exercer vos droits, contactez le responsable du site via le canal publié sur ce site. Ces informations doivent être complétées avec l'identité et les coordonnées réelles du responsable avant la publication du site.",
         privacyNote: "Une adresse IP est une donnée personnelle. Cette page fournit des informations générales et doit être examinée avec le responsable du traitement ou un conseiller juridique avant d'être utilisée comme politique de confidentialité définitive.",
         styleLabel: "",
-        style8Bit: "8-bit",
         style16Bit: "16-bit",
         styleOriginal: "Original",
         langLocale: "fr-FR"
@@ -114,7 +111,7 @@ const visitorsApiPath = 'api/collections/visitors/records';
 const visualStyleStorageKey = 'pro-index-visual-style';
 
 function applyVisualStyle(style) {
-    const selectedStyle = ['original', '8bit', '16bit'].includes(style) ? style : 'original';
+    const selectedStyle = ['original', '16bit'].includes(style) ? style : 'original';
     document.documentElement.dataset.visualStyle = selectedStyle;
     document.querySelectorAll('[data-visual-style-option]').forEach(option => {
         const isSelected = option.value === selectedStyle;

@@ -279,67 +279,6 @@ h1 {
 .error-message { background: var(--error-bg); color: var(--error-text); font-family: system-ui, sans-serif; font-size: 0.85rem; font-weight: 600; padding: 1rem; }
 .hidden { display: none !important; }
 
-/* 8-bit mode: hard edges, limited palette, and no gradients. */
-:root[data-visual-style="8bit"] {
-    --bg-color: #f4e8b8;
-    --surface-color: #fff6d5;
-    --surface-strong: #d94f4f;
-    --text-main: #17152b;
-    --text-muted: #51465a;
-    --accent-color: #d94f4f;
-    --accent-strong: #2d6cdf;
-    --border-color: #17152b;
-    --shadow-color: #17152b;
-    --error-bg: #f3b4a8;
-    --error-text: #5c1e2b;
-}
-
-:root[data-visual-style="8bit"] body {
-    background-image: none;
-    font-family: "Courier New", monospace;
-    image-rendering: pixelated;
-}
-
-:root[data-visual-style="8bit"] .blog-header {
-    border-bottom-width: 4px;
-}
-
-:root[data-visual-style="8bit"] .blog-brand,
-:root[data-visual-style="8bit"] h1 {
-    color: var(--accent-color);
-    text-shadow: 3px 3px 0 var(--shadow-color);
-}
-
-:root[data-visual-style="8bit"] .blog-intro,
-:root[data-visual-style="8bit"] .project-item,
-:root[data-visual-style="8bit"] .project-detail {
-    border: 3px solid var(--border-color);
-    border-radius: 0;
-    box-shadow: 6px 6px 0 var(--shadow-color);
-}
-
-:root[data-visual-style="8bit"] .project-image,
-:root[data-visual-style="8bit"] .project-image-full {
-    image-rendering: pixelated;
-}
-
-:root[data-visual-style="8bit"] .project-link,
-:root[data-visual-style="8bit"] .project-links-card,
-:root[data-visual-style="8bit"] .project-diagram-canvas {
-    border-width: 3px;
-    border-radius: 0;
-}
-
-/* 16-bit mode: richer color, layered depth, and a soft arcade glow. */
-:root[data-visual-style="16bit"] .project-item,
-:root[data-visual-style="16bit"] .project-detail {
-    border-radius: 0.65rem;
-}
-
-:root[data-visual-style="16bit"] .project-image {
-    border-radius: 0.35rem;
-}
-
 /* Original mode: restrained editorial layout with functional hierarchy. */
 :root[data-visual-style="original"] {
     --bg-color: #f7f4eb;
@@ -583,15 +522,6 @@ h1 {
     content: "- ";
 }
 
-:root[data-visual-style="8bit"] .style-switcher-toggle,
-:root[data-visual-style="8bit"] .style-switcher .dropdown-menu {
-    border-width: 3px;
-}
-
-:root[data-visual-style="8bit"] .style-switcher .dropdown-menu {
-    box-shadow: 4px 4px 0 var(--shadow-color);
-}
-
 :root[data-visual-style="original"] .style-switcher-toggle {
     border: 0;
     border-bottom: 1px solid currentColor;
@@ -633,40 +563,51 @@ h1 {
 
 /* 16-bit mode: SNES-inspired title screen and HUD panels. */
 :root[data-visual-style="16bit"] {
-    --bg-color: #101b42;
-    --surface-color: rgba(24, 42, 89, 0.94);
-    --surface-strong: #2e4f91;
-    --text-main: #fff8dc;
-    --text-muted: #c6d5f2;
-    --accent-color: #ffd15c;
-    --accent-strong: #ef6d86;
-    --border-color: #6e9ed1;
-    --shadow-color: #07132e;
-    --error-bg: #6b2949;
-    --error-text: #ffe1e7;
+    --bg-color: #111947;
+    --surface-color: #202f69;
+    --surface-strong: #334f96;
+    --text-main: #fff5d6;
+    --text-muted: #c9d8f6;
+    --accent-color: #ffd95e;
+    --accent-strong: #e96b91;
+    --border-color: #8db9e8;
+    --shadow-color: #070e2d;
+    --error-bg: #672b52;
+    --error-text: #ffe4ed;
 }
 
 :root[data-visual-style="16bit"] body {
-    background-image: linear-gradient(180deg, rgba(53, 85, 153, 0.32), transparent 38%),
-        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 2px, transparent 2px 6px),
-        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0 2px, transparent 2px 6px);
-    font-family: "Trebuchet MS", Verdana, sans-serif;
+    background-image: linear-gradient(180deg, rgba(79, 113, 190, 0.42), transparent 42%),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 6px),
+        radial-gradient(circle at 20% 10%, rgba(255, 217, 94, 0.1) 0 1px, transparent 1px 8px);
+    background-size: cover, auto, 8px 8px;
+    font-family: "Pixelify Sans", "Trebuchet MS", sans-serif;
 }
 
 :root[data-visual-style="16bit"] .blog-header {
     border-bottom: 4px solid var(--accent-color);
-    box-shadow: 0 5px 0 rgba(7, 19, 46, 0.7);
+    box-shadow: 0 5px 0 var(--shadow-color);
     margin-bottom: 2.4rem;
 }
 
 :root[data-visual-style="16bit"] .blog-brand,
-:root[data-visual-style="16bit"] h1 {
+:root[data-visual-style="16bit"] h1,
+:root[data-visual-style="16bit"] .project-item h2,
+:root[data-visual-style="16bit"] .project-detail h1 {
     color: var(--accent-color);
-    text-shadow: 3px 3px 0 var(--shadow-color);
+    font-family: "Press Start 2P", "Pixelify Sans", monospace;
+    letter-spacing: 0.02em;
+    text-shadow: 2px 2px 0 var(--shadow-color),
+        4px 4px 0 #b63f75;
+}
+
+:root[data-visual-style="16bit"] h1 {
+    font-size: clamp(1.45rem, 3vw, 2.6rem);
+    line-height: 1.45;
 }
 
 :root[data-visual-style="16bit"] .blog-intro {
-    border: 2px solid var(--border-color);
+    border: 3px solid var(--border-color);
     box-shadow: 8px 8px 0 var(--shadow-color);
     padding: 2.25rem;
 }
@@ -675,62 +616,74 @@ h1 {
 :root[data-visual-style="16bit"] .project-item p,
 :root[data-visual-style="16bit"] .project-description {
     color: var(--text-muted);
+    font-family: "Pixelify Sans", "Trebuchet MS", sans-serif;
+    font-size: 1.15rem;
 }
 
 :root[data-visual-style="16bit"] .project-item,
 :root[data-visual-style="16bit"] .project-detail {
-    border: 2px solid var(--border-color);
-    border-radius: 0.35rem;
-    box-shadow: 6px 6px 0 var(--shadow-color);
-}
-
-:root[data-visual-style="16bit"] .project-item h2,
-:root[data-visual-style="16bit"] .project-detail h1 {
-    color: var(--text-main);
+    background: linear-gradient(135deg, #263b7c, #1b285d);
+    border: 3px solid var(--border-color);
+    border-radius: 0.25rem;
+    box-shadow: 6px 6px 0 var(--shadow-color), inset 0 0 0 2px rgba(255, 245, 214, 0.1);
 }
 
 :root[data-visual-style="16bit"] .project-title-link {
+    color: var(--text-main);
+    font-family: "Pixelify Sans", "Trebuchet MS", sans-serif;
+    font-size: 1.35em;
     text-decoration-color: var(--accent-color);
 }
 
 :root[data-visual-style="16bit"] .project-image,
 :root[data-visual-style="16bit"] .project-image-full {
-    border: 2px solid var(--border-color);
+    border: 3px solid var(--border-color);
     box-shadow: 4px 4px 0 var(--shadow-color);
 }
 
 :root[data-visual-style="16bit"] .project-badges .badge {
-    background: #315d9e !important;
-    border: 1px solid #8bb7e4;
-    color: #fff8dc !important;
-    font-weight: 700;
+    background: #3b65aa !important;
+    border: 2px solid #a7d0f4;
+    color: var(--text-main) !important;
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
 }
 
 :root[data-visual-style="16bit"] .project-links-card {
-    background: rgba(11, 24, 59, 0.78);
-    border: 2px solid var(--border-color);
+    background: #111f50;
+    border: 3px solid var(--border-color);
 }
 
 :root[data-visual-style="16bit"] .project-link {
-    background: #203e7a;
-    border: 2px solid #6e9ed1;
+    background: #2e4f96;
+    border: 2px solid #8db9e8;
     color: var(--text-main);
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 1.05rem;
 }
 
 :root[data-visual-style="16bit"] .project-link:hover,
 :root[data-visual-style="16bit"] .project-link:focus-visible {
     background: var(--accent-color);
-    color: #152653;
+    color: #17204f;
 }
 
 :root[data-visual-style="16bit"] .project-diagram {
-    border-top: 2px solid var(--border-color);
+    border-top: 3px solid var(--border-color);
+}
+
+:root[data-visual-style="16bit"] .project-diagram h2,
+:root[data-visual-style="16bit"] .status,
+:root[data-visual-style="16bit"] .privacy-notice {
+    color: var(--text-muted);
+    font-family: "Pixelify Sans", sans-serif;
 }
 
 :root[data-visual-style="16bit"] .project-diagram-canvas {
-    background: #0b183b;
-    border: 2px solid var(--border-color);
-    box-shadow: inset 0 0 0 3px rgba(7, 19, 46, 0.65);
+    background: #0b1438;
+    border: 3px solid var(--border-color);
+    box-shadow: inset 0 0 0 3px var(--shadow-color);
 }
 
 :root[data-visual-style="16bit"] .project-diagram-canvas svg text,
@@ -739,33 +692,36 @@ h1 {
 }
 
 :root[data-visual-style="16bit"] .privacy-notice {
-    background: rgba(11, 24, 59, 0.78);
-    border: 2px solid var(--border-color);
+    background: #111f50;
+    border: 3px solid var(--border-color);
     color: var(--text-muted);
 }
 
 :root[data-visual-style="16bit"] .style-switcher-toggle {
-    background: #203e7a;
-    border: 2px solid var(--border-color);
+    background: #2e4f96;
+    border: 3px solid var(--border-color);
     box-shadow: 3px 3px 0 var(--shadow-color);
     color: var(--text-main);
+    font-family: "Pixelify Sans", sans-serif;
 }
 
 :root[data-visual-style="16bit"] .style-switcher-toggle:hover,
 :root[data-visual-style="16bit"] .style-switcher-toggle:focus-visible,
 :root[data-visual-style="16bit"] .style-switcher-toggle[aria-expanded="true"] {
     background: var(--accent-color);
-    color: #152653;
+    color: #17204f;
 }
 
 :root[data-visual-style="16bit"] .style-switcher .dropdown-menu {
-    background: #182f67;
-    border: 2px solid var(--border-color);
+    background: #1a2e6c;
+    border: 3px solid var(--border-color);
     box-shadow: 5px 5px 0 var(--shadow-color);
 }
 
 :root[data-visual-style="16bit"] .style-switcher .dropdown-item {
     color: var(--text-main);
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 1rem;
 }
 
 :root[data-visual-style="16bit"] .style-switcher .dropdown-item:hover,
@@ -773,7 +729,7 @@ h1 {
 :root[data-visual-style="16bit"] .style-switcher .dropdown-item.active,
 :root[data-visual-style="16bit"] .style-switcher .dropdown-item:active {
     background: var(--accent-color);
-    color: #152653;
+    color: #17204f;
 }
 
 @media (max-width: 767.98px) {
@@ -784,5 +740,9 @@ h1 {
     :root[data-visual-style="16bit"] .project-item,
     :root[data-visual-style="16bit"] .project-detail {
         box-shadow: 4px 4px 0 var(--shadow-color);
+    }
+
+    :root[data-visual-style="16bit"] h1 {
+        font-size: 1.2rem;
     }
 }
