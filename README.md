@@ -100,9 +100,12 @@ The `projects` collection must provide at least the following fields:
 - `collectionId`: collection identifier used to build the file URL.
 - `repo`: code repository URL.
 - `public`: public project URL.
+- `is_public`: boolean visibility flag. Only records with `is_public = true` are exposed on the public website and through public PocketBase list/detail rules.
 - `schema`: project-specific Mermaid diagram, displayed in the detail view.
 
 The `languages` and `tech_stack` fields may be received as single values or arrays. The frontend normalizes both cases before rendering the badges.
+
+The `is_public` field is created by the PocketBase migration `20260922120000_add_project_visibility.js` when the `projects` collection already exists. Existing records default to private (`false`), so publish each project intentionally from the PocketBase dashboard.
 
 The `schema` field must contain only the diagram's Mermaid code. For example:
 

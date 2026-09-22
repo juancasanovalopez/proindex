@@ -3,6 +3,26 @@ const supportedLanguages = ['es', 'en', 'fr'];
 const projectsApiPath = 'api/collections/projects/records';
 const visitorsApiPath = 'api/collections/visitors/records';
 const visualStyleStorageKey = 'pro-index-visual-style';
+const publicProjectsFilter = 'is_public = true';
+
+function getProjectsUrl(params = {}) {
+    const url = new URL(projectsApiPath, window.location.href);
+
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+            url.searchParams.set(key, value);
+        }
+    });
+
+    return url;
+}
+
+function getPublicProjectDetailUrl(postId) {
+    return getProjectsUrl({
+        filter: `id = '${postId.replace(/'/g, "\\'")}' && ${publicProjectsFilter}`,
+        perPage: '1'
+    });
+}
 
 function renderSharedHeader(page) {
     const navigation = page === 'post'
@@ -317,13 +337,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- MODO A: VISTA DE DETALLE (post.html) ---
     if (postId && elPost) {
-        fetch(`${projectsApiPath}/${encodeURIComponent(postId)}`)
+        fetch(getPublicProjectDetailUrl(postId))
             .then(res => {
                 if (!res.ok) throw new Error();
                 return res.json();
             })
-            .then(project => {
+            .then(data => {
                 if (elCargando) elCargando.classList.add('hidden');
+
+                const project = Array.isArray(data.items) ? data.items[0] : null;
+                if (!project) {
+                    if (elVacio) elVacio.classList.remove('hidden');
+                    return;
+                }
 
                 const projectData = prepararProyecto(project, lang, t);
                 const imagen = projectData.imagenUrl
@@ -369,7 +395,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- MODO B: VISTA DE LISTA (index.html / principal) ---
     } else if (elLista) {
-        fetch(projectsApiPath)
+        fetch(getProjectsUrl({ filter: publicProjectsFilter }))
             .then(res => {
                 if (!res.ok) throw new Error();
                 return res.json();
