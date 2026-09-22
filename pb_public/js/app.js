@@ -1,114 +1,52 @@
-const i18n = {
-    es: {
-        title: "portfolio",
-        posttitle: "portfolio | proyecto",
-        directory: "directorio",
-        allprojects: "todos los proyectos",
-        subtitle: "una lista pública de recursos compartidos",
-        loading: "buscando registros...",
-        error: "[error de sistema] no se pudieron cargar los datos.",
-        empty: "0 proyectos encontrados en la base de datos.",
-        repo: "repositorio de código",
-        coderepository: "repositorio de código",
-        norepo: "sin repositorio disponible.",
-        public: "url pública",
-        publicurl: "url pública",
-        nopublic: "sin url pública disponible.",
-        nodesc: "sin descripción adicional.",
-        architecture: "esquema de arquitectura",
-        diagramerror: "no se pudo renderizar el esquema.",
-        nodiagram: "sin esquema disponible.",
-        privacynotice: "esta web registra datos técnicos de visita durante 7 días. Más información en la política de privacidad.",
-        privacyTitle: "Privacidad",
-        privacyBack: "Volver",
-        privacyIntro: "Esta web registra métricas técnicas de visita para conocer el uso básico del directorio y mantenerlo seguro. No utiliza cookies de analítica ni técnicas de fingerprinting.",
-        privacyDataTitle: "Datos registrados",
-        privacyDataText: "En cada visita se pueden registrar la dirección IP, la página visitada, la fecha y hora, el navegador y sistema informados por el navegador, la página de procedencia, los idiomas preferidos, la plataforma, el tamaño de pantalla y la zona horaria.",
-        privacyPurposeTitle: "Finalidad, base jurídica y conservación",
-        privacyPurposeText: "La finalidad es elaborar estadísticas agregadas de uso, detectar actividad abusiva y mejorar el funcionamiento del sitio. La base jurídica prevista es el interés legítimo del responsable, ponderado frente a los derechos de las personas, conforme al artículo 6.1.f del RGPD. Los registros se eliminan automáticamente cuando tienen más de siete días.",
-        privacyRightsTitle: "Derechos",
-        privacyRightsText: "Puedes solicitar acceso, rectificación, supresión, limitación u oposición al tratamiento, y presentar una reclamación ante la Agencia Española de Protección de Datos. Para ejercer tus derechos, contacta con el responsable del sitio mediante el canal publicado en esta web. Esta información debe completarse con la identidad y datos de contacto reales del responsable antes de publicar el sitio.",
-        privacyNote: "La dirección IP es un dato personal. Esta página es información general y debe revisarse con el responsable del tratamiento o asesoría jurídica antes de usarla como política de privacidad definitiva.",
-        styleLabel: "",
-        style16Bit: "16-bit",
-        styleOriginal: "Original",
-        langLocale: "es-ES"
-    },
-    en: {
-        title: "Portfolio",
-        postTitle: "Portfolio | Project",
-        directory: "Directory",
-        allProjects: "All projects",
-        subtitle: "A public list of shared resources",
-        loading: "Fetching records...",
-        error: "[System Error] Data could not be loaded.",
-        empty: "0 projects found in the database.",
-        repo: "code repository",
-        codeRepository: "Code Repository",
-        noRepo: "No repository available.",
-        public: "Public url",
-        publicUrl: "Public URL",
-        noPublic: "No public URL available.",
-        noDesc: "No additional description available.",
-        architecture: "Architecture diagram",
-        diagramError: "The diagram could not be rendered.",
-        noDiagram: "No diagram available.",
-        privacyNotice: "This website records technical visit data for 7 days. More information in the privacy policy.",
-        privacyTitle: "Privacy",
-        privacyBack: "Back",
-        privacyIntro: "This website records technical visit metrics to understand basic directory usage and keep it secure. It does not use analytics cookies or fingerprinting techniques.",
-        privacyDataTitle: "Recorded data",
-        privacyDataText: "Each visit may record the IP address, visited page, date and time, browser and operating system reported by the browser, referring page, preferred languages, platform, screen size, and time zone.",
-        privacyPurposeTitle: "Purpose, legal basis, and retention",
-        privacyPurposeText: "The purpose is to produce aggregated usage statistics, detect abusive activity, and improve the site's operation. The proposed legal basis is the data controller's legitimate interest, balanced against people's rights, under Article 6(1)(f) of the GDPR. Records are automatically deleted when they are more than seven days old.",
-        privacyRightsTitle: "Rights",
-        privacyRightsText: "You may request access, rectification, erasure, restriction, or object to the processing, and lodge a complaint with the Spanish Data Protection Agency. To exercise your rights, contact the site controller through the channel published on this website. This information must be completed with the controller's actual identity and contact details before the site is published.",
-        privacyNote: "An IP address is personal data. This page is general information and should be reviewed with the data controller or legal counsel before being used as the final privacy policy.",
-        styleLabel: "",
-        style16Bit: "16-bit",
-        styleOriginal: "Original",
-        langLocale: "en-US"
-    },
-    fr: {
-        title: "Portfolio",
-        postTitle: "Portfolio | Projet",
-        directory: "Répertoire",
-        allProjects: "Tous les projets",
-        subtitle: "Une liste publique de ressources partagées",
-        loading: "Récupération des données...",
-        error: "[Erreur système] Impossible de charger les données.",
-        empty: "0 projet trouvé dans la base de données.",
-        repo: "dépôt de code",
-        codeRepository: "Dépôt de code",
-        noRepo: "Pas de dépôt disponible.",
-        public: "URL publique",
-        publicUrl: "URL publique",
-        noPublic: "Pas d'URL publique disponible.",
-        noDesc: "Aucune description supplémentaire disponible.",
-        architecture: "Schéma d'architecture",
-        diagramError: "Impossible de rendre le schéma.",
-        noDiagram: "Pas de schéma disponible.",
-        privacyNotice: "Ce site enregistre des données techniques de visite pendant 7 jours. Plus d'informations dans la politique de confidentialité.",
-        privacyTitle: "Confidentialité",
-        privacyBack: "Retour",
-        privacyIntro: "Ce site enregistre des métriques techniques de visite afin de comprendre l'utilisation de base du répertoire et de le sécuriser. Il n'utilise pas de cookies analytiques ni de techniques de fingerprinting.",
-        privacyDataTitle: "Données enregistrées",
-        privacyDataText: "Lors de chaque visite, peuvent être enregistrés l'adresse IP, la page visitée, la date et l'heure, le navigateur et le système d'exploitation indiqués par le navigateur, la page d'origine, les langues préférées, la plateforme, la taille de l'écran et le fuseau horaire.",
-        privacyPurposeTitle: "Finalité, base juridique et conservation",
-        privacyPurposeText: "La finalité est de produire des statistiques d'utilisation agrégées, de détecter les activités abusives et d'améliorer le fonctionnement du site. La base juridique proposée est l'intérêt légitime du responsable du traitement, mis en balance avec les droits des personnes, conformément à l'article 6.1.f du RGPD. Les enregistrements sont automatiquement supprimés après sept jours.",
-        privacyRightsTitle: "Droits",
-        privacyRightsText: "Vous pouvez demander l'accès, la rectification, l'effacement, la limitation ou vous opposer au traitement, et déposer une réclamation auprès de l'Agence espagnole de protection des données. Pour exercer vos droits, contactez le responsable du site via le canal publié sur ce site. Ces informations doivent être complétées avec l'identité et les coordonnées réelles du responsable avant la publication du site.",
-        privacyNote: "Une adresse IP est une donnée personnelle. Cette page fournit des informations générales et doit être examinée avec le responsable du traitement ou un conseiller juridique avant d'être utilisée comme politique de confidentialité définitive.",
-        styleLabel: "",
-        style16Bit: "16-bit",
-        styleOriginal: "Original",
-        langLocale: "fr-FR"
-    }
-};
+const supportedLanguages = ['es', 'en', 'fr'];
 
 const projectsApiPath = 'api/collections/projects/records';
 const visitorsApiPath = 'api/collections/visitors/records';
 const visualStyleStorageKey = 'pro-index-visual-style';
+
+function renderSharedHeader(page) {
+    const navigation = page === 'post'
+        ? `<a class="blog-nav-link" href="./">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            <span data-i18n="allProjects"></span>
+           </a>`
+        : page === 'privacy'
+            ? `<a class="blog-brand" href="./">Pro Index</a>
+               <a class="blog-nav-link" href="./" data-i18n="privacyBack"></a>`
+            : '<a class="blog-brand" href="./">Pro Index</a>';
+    const menuId = `style-menu-${page}`;
+
+    return `
+        <header class="blog-header">
+            ${navigation}
+            <div class="dropdown style-switcher">
+                <button class="btn style-switcher-toggle dropdown-toggle" type="button" id="${menuId}" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-palette2" aria-hidden="true"></i>
+                    ${page === 'index' ? '' : '<span data-i18n="styleLabel"></span>: <span data-current-style></span>'}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="${menuId}">
+                    <li><button class="dropdown-item" type="button" role="menuitemradio" value="16bit" data-visual-style-option data-i18n="style16Bit" aria-checked="false"></button></li>
+                    <li><button class="dropdown-item" type="button" role="menuitemradio" value="original" data-visual-style-option data-i18n="styleOriginal" aria-checked="false"></button></li>
+                </ul>
+            </div>
+        </header>`;
+}
+
+function renderSharedFooter() {
+    return `
+        <footer class="container site-footer">
+            <p class="privacy-notice" data-privacy-notice></p>
+        </footer>`;
+}
+
+function initializeSharedLayout() {
+    const page = document.body.dataset.page || 'index';
+    const headerPlaceholder = document.querySelector('[data-layout-header]');
+    const footerPlaceholder = document.querySelector('[data-layout-footer]');
+
+    if (headerPlaceholder) headerPlaceholder.outerHTML = renderSharedHeader(page);
+    if (footerPlaceholder) footerPlaceholder.outerHTML = renderSharedFooter();
+}
 
 function applyVisualStyle(style) {
     const selectedStyle = ['original', '16bit'].includes(style) ? style : 'original';
@@ -138,6 +76,22 @@ function initializeVisualStyle() {
     });
 }
 
+async function loadTranslations(lang) {
+    const requestedLanguage = supportedLanguages.includes(lang) ? lang : 'es';
+
+    try {
+        const response = await fetch(`./locales/${requestedLanguage}.json`);
+        if (!response.ok) throw new Error(`Translation file not found: ${requestedLanguage}`);
+        return await response.json();
+    } catch (error) {
+        if (requestedLanguage === 'es') throw error;
+
+        const fallbackResponse = await fetch('./locales/es.json');
+        if (!fallbackResponse.ok) throw error;
+        return fallbackResponse.json();
+    }
+}
+
 function registrarVisita() {
     const screenSize = window.screen ? `${window.screen.width}x${window.screen.height}` : '';
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
@@ -163,7 +117,7 @@ function getBrowserLanguage() {
     const languages = navigator.languages || [navigator.language || 'es'];
     for (const langCode of languages) {
         const shortLang = langCode.split('-')[0];
-        if (i18n[shortLang]) return shortLang;
+        if (supportedLanguages.includes(shortLang)) return shortLang;
     }
     return 'es';
 }
@@ -315,9 +269,11 @@ async function renderProjectDiagram(container, diagram, t) {
     container.innerHTML = svg;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    initializeSharedLayout();
+
     const lang = getBrowserLanguage();
-    const t = i18n[lang];
+    const t = await loadTranslations(lang);
 
     document.documentElement.lang = lang;
     registrarVisita();
