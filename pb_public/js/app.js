@@ -31,23 +31,37 @@ function renderSharedHeader(page) {
             <span data-i18n="allProjects"></span>
            </a>`
         : page === 'privacy'
-            ? `<a class="blog-brand" href="./">Pro Index</a>
+            ? `<a class="blog-brand" href="./">Porfolio</a>
                <a class="blog-nav-link" href="./" data-i18n="privacyBack"></a>`
-            : '<a class="blog-brand" href="./">Pro Index</a>';
-    const menuId = `style-menu-${page}`;
+            : '<a class="blog-brand" href="./">Porfolio</a>';
+    const contactMenuId = `contact-menu-${page}`;
+    const styleMenuId = `style-menu-${page}`;
 
     return `
         <header class="blog-header">
             ${navigation}
-            <div class="dropdown style-switcher">
-                <button class="btn style-switcher-toggle dropdown-toggle" type="button" id="${menuId}" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-palette2" aria-hidden="true"></i>
-                    ${page === 'index' ? '' : '<span data-i18n="styleLabel"></span>: <span data-current-style></span>'}
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="${menuId}">
-                    <li><button class="dropdown-item" type="button" role="menuitemradio" value="16bit" data-visual-style-option data-i18n="style16Bit" aria-checked="false"></button></li>
-                    <li><button class="dropdown-item" type="button" role="menuitemradio" value="original" data-visual-style-option data-i18n="styleOriginal" aria-checked="false"></button></li>
-                </ul>
+            <div class="header-actions">
+                <div class="dropdown style-switcher">
+                    <button class="btn style-switcher-toggle dropdown-toggle" type="button" id="${contactMenuId}" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-envelope" aria-hidden="true"></i>
+                    
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="${contactMenuId}">
+                        <li><a class="dropdown-item" href="mailto:contacto@example.com"><i class="bi bi-envelope-at" aria-hidden="true"></i> contacto@example.com</a></li>
+                        <li><a class="dropdown-item" href="tel:+34600000000"><i class="bi bi-telephone" aria-hidden="true"></i> +34 600 000 000</a></li>
+                        <li><a class="dropdown-item" href="https://www.linkedin.com/in/tu-perfil/" target="_blank" rel="noopener noreferrer"><i class="bi bi-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown style-switcher">
+                    <button class="btn style-switcher-toggle dropdown-toggle" type="button" id="${styleMenuId}" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-palette2" aria-hidden="true"></i>
+                        ${page === 'index' ? '' : '<span data-i18n="styleLabel"></span>: <span data-current-style></span>'}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="${styleMenuId}">
+                        <li><button class="dropdown-item" type="button" role="menuitemradio" value="16bit" data-visual-style-option data-i18n="style16Bit" aria-checked="false"></button></li>
+                        <li><button class="dropdown-item" type="button" role="menuitemradio" value="original" data-visual-style-option data-i18n="styleOriginal" aria-checked="false"></button></li>
+                    </ul>
+                </div>
             </div>
         </header>`;
 }

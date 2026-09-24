@@ -73,6 +73,13 @@ body {
     text-transform: uppercase;
 }
 
+.header-actions {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    margin-left: auto;
+}
+
 .blog-intro {
     background: var(--surface-color);
     border: 1px solid var(--border-color);
@@ -576,7 +583,8 @@ h1 {
         gap: 0.8rem;
     }
 
-    .style-switcher.dropdown {
+    .header-actions {
+        gap: 0.6rem;
         margin-left: auto;
     }
 }
