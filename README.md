@@ -118,6 +118,10 @@ flowchart LR
 
 The detail view loads Mermaid locally and renders the diagram associated with the record. If a project does not have `schema`, the diagram section is not displayed. For compatibility with existing records, the `diagram` and `architecture` fields are also accepted, although `schema` is the recommended name.
 
+## Contact information
+
+The `contact_info` collection is created automatically by a PocketBase migration. Its initial record contains placeholder values for `email`, `linkedin`, and `github`; replace them in the PocketBase dashboard before publishing. The website reads the first record to populate the contact dropdown on every page. Empty or invalid values are omitted, and the dropdown is hidden when no usable contact method is available. Public users can read contact records, but only administrators can create or edit them. Keep a single record in this collection.
+
 ## Visitor tracking
 
 The application records each page load in the PocketBase `visitors` collection. The collection is created automatically by a native PocketBase migration. It stores the visited page path, server-captured IP address, User-Agent, referrer, accepted languages, browser language, platform, screen size, and time zone.

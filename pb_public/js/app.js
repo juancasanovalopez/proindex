@@ -2,6 +2,7 @@ const supportedLanguages = ['es', 'en', 'fr'];
 
 const projectsApiPath = 'api/collections/projects/records';
 const visitorsApiPath = 'api/collections/visitors/records';
+const contactApiPath = 'api/collections/contact_info/records';
 const visualStyleStorageKey = 'pro-index-visual-style';
 const publicProjectsFilter = 'is_public = true';
 
@@ -41,16 +42,11 @@ function renderSharedHeader(page) {
         <header class="blog-header">
             ${navigation}
             <div class="header-actions">
-                <div class="dropdown style-switcher">
-                    <button class="btn style-switcher-toggle dropdown-toggle" type="button" id="${contactMenuId}" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="dropdown style-switcher hidden" data-contact-menu>
+                    <button class="btn style-switcher-toggle dropdown-toggle" type="button" id="${contactMenuId}" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Contacto" title="Contacto">
                         <i class="bi bi-envelope" aria-hidden="true"></i>
-                    
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="${contactMenuId}">
-                        <li><a class="dropdown-item" href="mailto:contacto@example.com"><i class="bi bi-envelope-at" aria-hidden="true"></i> contacto@example.com</a></li>
-                        <li><a class="dropdown-item" href="tel:+34600000000"><i class="bi bi-telephone" aria-hidden="true"></i> +34 600 000 000</a></li>
-                        <li><a class="dropdown-item" href="https://www.linkedin.com/in/tu-perfil/" target="_blank" rel="noopener noreferrer"><i class="bi bi-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
-                    </ul>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="${contactMenuId}" data-contact-links></ul>
                 </div>
                 <div class="dropdown style-switcher">
                     <button class="btn style-switcher-toggle dropdown-toggle" type="button" id="${styleMenuId}" data-bs-toggle="dropdown" aria-expanded="false">
@@ -80,6 +76,59 @@ function initializeSharedLayout() {
 
     if (headerPlaceholder) headerPlaceholder.outerHTML = renderSharedHeader(page);
     if (footerPlaceholder) footerPlaceholder.outerHTML = renderSharedFooter();
+}
+
+async function loadContactInfo() {
+    const menu = document.querySelector('[data-contact-menu]');
+    if (!menu) return;
+
+    try {
+        const response = await fetch(`${contactApiPath}?perPage=1`);
+        if (!response.ok) throw new Error('Contact info unavailable');
+
+        const { items } = await response.json();
+        const contact = items?.[0];
+        if (!contact) return;
+
+        const links = menu.querySelector('[data-contact-links]');
+        const addLink = (label, href, icon, external = false) => {
+            const item = document.createElement('li');
+            const link = document.createElement('a');
+            const symbol = document.createElement('i');
+            symbol.className = `bi ${icon}`;
+            symbol.setAttribute('aria-hidden', 'true');
+            link.className = 'dropdown-item';
+            link.href = href;
+            if (external) {
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+            }
+            link.append(symbol, ` ${label}`);
+            item.appendChild(link);
+            links.appendChild(item);
+        };
+
+        const email = typeof contact.email === 'string' ? contact.email.trim() : '';
+        if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            addLink(email, `mailto:${email}`, 'bi-envelope-at');
+        }
+
+        for (const [field, label, icon] of [
+            ['linkedin', 'LinkedIn', 'bi-linkedin'],
+            ['github', 'GitHub', 'bi-github']
+        ]) {
+            try {
+                const url = new URL(contact[field]);
+                if (url.protocol === 'https:') addLink(label, url.href, icon, true);
+            } catch (_) {
+                continue;
+            }
+        }
+
+        if (links.children.length) menu.classList.remove('hidden');
+    } catch (error) {
+        console.error('No se pudieron cargar los datos de contacto.', error);
+    }
 }
 
 function applyVisualStyle(style) {
@@ -305,6 +354,7 @@ async function renderProjectDiagram(container, diagram, t) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     initializeSharedLayout();
+    loadContactInfo();
 
     const lang = getBrowserLanguage();
     const t = await loadTranslations(lang);
@@ -324,6 +374,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const key = el.getAttribute('data-i18n');
         if (t[key]) el.textContent = t[key];
     });
+
+    const contactButton = document.querySelector('[data-contact-menu] button');
+    if (contactButton) {
+        contactButton.setAttribute('aria-label', t.contactLabel || 'Contacto');
+        contactButton.title = t.contactLabel || 'Contacto';
+    }
 
     initializeVisualStyle();
 

@@ -23,6 +23,6 @@ jobs:
             cd /home/deployproindex/proindex
             git pull --ff-only origin main
             docker compose config --quiet
-            docker compose up -d --remove-orphans
+            docker compose up -d --wait --force-recreate --remove-orphans
             docker compose ps
             test "$(docker inspect --format='{{.State.Health.Status}}' pocketbase-local)" = healthy
