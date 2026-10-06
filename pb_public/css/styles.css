@@ -47,8 +47,9 @@ body {
     border-bottom: 2px solid var(--accent-color);
     display: flex;
     justify-content: space-between;
-    margin-bottom: 3rem;
-    padding-bottom: 1rem;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.25rem;
 }
 
 .blog-brand,
@@ -62,6 +63,7 @@ body {
     font-size: 1.5rem;
     letter-spacing: 0.08em;
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .blog-nav-link {
@@ -78,14 +80,16 @@ body {
     display: flex;
     gap: 0.75rem;
     margin-left: auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 .blog-intro {
     background: var(--surface-color);
     border: 1px solid var(--border-color);
-    box-shadow: 0.5rem 0.5rem 0 var(--shadow-color);
+    box-shadow: 0 0.5rem 1.5rem var(--shadow-color);
     margin-bottom: 3rem;
-    padding: 2rem;
+    padding: clamp(1.5rem, 4vw, 3rem);
 }
 
 h1,
@@ -134,16 +138,128 @@ h1 {
 
 .project-list {
     display: grid;
-    gap: 2.75rem;
+    gap: 2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.project-list > .status,
+.project-list > .error-message {
+    grid-column: 1 / -1;
 }
 
 .project-item,
 .project-detail {
     background: var(--surface-color);
     border: 1px solid var(--border-color);
-    box-shadow: 0.45rem 0.45rem 0 var(--shadow-color);
+    box-shadow: 0 0.35rem 1.2rem var(--shadow-color);
     min-width: 0;
     padding: 1.5rem;
+}
+
+.project-list .project-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+.project-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    padding: 1.5rem;
+}
+
+.project-content,
+.privacy-page article {
+    max-width: 900px;
+    margin-inline: auto;
+}
+
+.project-detail {
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.project-detail-header {
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+}
+
+.project-detail-header .project-links-card {
+    margin-top: 1.25rem;
+}
+
+.project-description-full {
+    max-width: 70ch;
+}
+
+.editorial-label {
+    color: var(--text-muted);
+    font-family: system-ui, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.blog-intro .editorial-label {
+    margin-bottom: 1rem;
+}
+
+.section-heading {
+    align-items: baseline;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+}
+
+.section-heading h2 {
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+.editorial-link {
+    align-items: center;
+    color: var(--accent-color);
+    display: inline-flex;
+    font-family: system-ui, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    gap: 0.75rem;
+    text-decoration: none;
+}
+
+.editorial-link:hover {
+    color: var(--text-main);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 4px;
+}
+
+.intro-link {
+    margin-top: 1.5rem;
+}
+
+.project-read-more {
+    margin-top: auto;
+    padding-top: 0.75rem;
+}
+
+.project-item,
+.project-detail,
+.privacy-page article {
+    overflow-wrap: anywhere;
 }
 
 .project-item h2,
@@ -158,6 +274,11 @@ h1 {
     text-decoration-color: var(--accent-color);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.18em;
+    text-decoration: none;
+}
+
+.project-title-link:hover {
+    text-decoration: underline;
 }
 
 .project-image,
@@ -173,6 +294,16 @@ h1 {
 .project-image {
     border: 1px solid var(--border-color);
     box-shadow: 0.3rem 0.3rem 0 var(--shadow-color);
+}
+
+.project-list .project-image {
+    aspect-ratio: 16 / 9;
+    border: 0;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: none;
+    margin: 0;
+    object-fit: contain;
+    background: var(--bg-color);
 }
 
 .project-image-link {
@@ -196,6 +327,21 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.project-badges:empty {
+    display: none;
+}
+
+.project-badges .badge {
+    background-color: var(--surface-strong) !important;
+    color: var(--text-main) !important;
+    font-family: system-ui, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    max-width: 100%;
+    white-space: normal;
 }
 
 .project-links-card {
@@ -377,6 +523,19 @@ h1 {
     padding: 0 0 2.75rem;
 }
 
+:root[data-visual-style="original"] .project-card-body {
+    padding: 1.5rem 0 0;
+}
+
+:root[data-visual-style="original"] .project-detail {
+    padding-bottom: 2.5rem;
+}
+
+:root[data-visual-style="original"] .project-badges .badge {
+    background-color: #e8e4d9 !important;
+    color: var(--text-main) !important;
+}
+
 :root[data-visual-style="original"] .project-image {
     border: 0;
     box-shadow: none;
@@ -413,6 +572,15 @@ h1 {
 }
 
 @media (max-width: 767.98px) {
+    .project-list {
+        gap: 1.75rem;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .project-card-body {
+        padding: 1.25rem;
+    }
+
     .site-container {
         padding-bottom: 2.5rem;
         padding-top: 1.25rem;
@@ -636,7 +804,7 @@ h1 {
 
 :root[data-visual-style="16bit"] .blog-intro {
     border: 3px solid var(--border-color);
-    box-shadow: 8px 8px 0 var(--shadow-color);
+    box-shadow: 4px 4px 0 var(--shadow-color);
     padding: 2.25rem;
 }
 
@@ -653,13 +821,19 @@ h1 {
     background: linear-gradient(135deg, #263b7c, #1b285d);
     border: 3px solid var(--border-color);
     border-radius: 0.25rem;
-    box-shadow: 6px 6px 0 var(--shadow-color), inset 0 0 0 2px rgba(255, 245, 214, 0.1);
+    box-shadow: 4px 4px 0 var(--shadow-color), inset 0 0 0 2px rgba(255, 245, 214, 0.1);
+}
+
+:root[data-visual-style="16bit"] .project-item h2 {
+    font-family: "Pixelify Sans", "Trebuchet MS", sans-serif;
+    font-size: 1.75rem;
+    text-shadow: none;
 }
 
 :root[data-visual-style="16bit"] .project-title-link {
     color: var(--text-main);
     font-family: "Pixelify Sans", "Trebuchet MS", sans-serif;
-    font-size: 1.35em;
+    font-size: inherit;
     text-decoration-color: var(--accent-color);
 }
 

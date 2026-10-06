@@ -32,16 +32,16 @@ function renderSharedHeader(page) {
             <span data-i18n="allProjects"></span>
            </a>`
         : page === 'privacy'
-            ? `<a class="blog-brand" href="./">Porfolio</a>
-               <a class="blog-nav-link" href="./" data-i18n="privacyBack"></a>`
-            : '<a class="blog-brand" href="./">Porfolio</a>';
+            ? '<a class="blog-nav-link" href="./" data-i18n="privacyBack"></a>'
+            : '';
     const contactMenuId = `contact-menu-${page}`;
     const styleMenuId = `style-menu-${page}`;
 
     return `
         <header class="blog-header">
-            ${navigation}
+            <a class="blog-brand" href="./" data-i18n="title"></a>
             <div class="header-actions">
+                ${navigation}
                 <div class="dropdown style-switcher hidden" data-contact-menu>
                     <button class="btn style-switcher-toggle dropdown-toggle" type="button" id="${contactMenuId}" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Contacto" title="Contacto">
                         <i class="bi bi-envelope" aria-hidden="true"></i>
@@ -49,9 +49,9 @@ function renderSharedHeader(page) {
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="${contactMenuId}" data-contact-links></ul>
                 </div>
                 <div class="dropdown style-switcher">
-                    <button class="btn style-switcher-toggle dropdown-toggle" type="button" id="${styleMenuId}" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn style-switcher-toggle dropdown-toggle" type="button" id="${styleMenuId}" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Estilo" data-style-toggle>
                         <i class="bi bi-palette2" aria-hidden="true"></i>
-                        ${page === 'index' ? '' : '<span data-i18n="styleLabel"></span>: <span data-current-style></span>'}
+                        <span data-current-style></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="${styleMenuId}">
                         <li><button class="dropdown-item" type="button" role="menuitemradio" value="16bit" data-visual-style-option data-i18n="style16Bit" aria-checked="false"></button></li>
@@ -380,6 +380,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         contactButton.setAttribute('aria-label', t.contactLabel || 'Contacto');
         contactButton.title = t.contactLabel || 'Contacto';
     }
+    document.querySelector('[data-style-toggle]').setAttribute('aria-label', t.styleLabel);
 
     initializeVisualStyle();
 
@@ -427,21 +428,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                     : '';
                 const postCard = document.createElement('article');
                 postCard.className = 'project-detail';
+                document.title = `${projectData.name} | ${t.title}`;
 
                 // Pintamos la información completa sin recortar en post.html
                 postCard.innerHTML = `
-                    <h1>${escaparHTML(projectData.name)}</h1>
+                    <header class="project-detail-header">
+                        <p class="editorial-label">${t.projectLabel}</p>
+                        <h1>${escaparHTML(projectData.name)}</h1>
+                        <div class="project-badges">${projectData.progLanguagesHtml}${projectData.techStackHtml}</div>
+                        ${renderProjectLinks(projectData, t)}
+                    </header>
                     ${imagen}
-                    <p class="project-badges">${projectData.progLanguagesHtml}</p>
-                    <p class="project-badges">${projectData.techStackHtml}</p>
                     <div class="project-description-full">
+                        <h2 class="editorial-label">${t.aboutProject}</h2>
                         <div class="project-description" data-project-description></div>
                     </div>
                     <section class="project-diagram" aria-labelledby="project-diagram-title">
                         <h2 id="project-diagram-title">${t.architecture}</h2>
                         <div class="project-diagram-canvas" role="img" aria-label="${t.architecture}"></div>
                     </section>
-                    ${renderProjectLinks(projectData, t)}
                 `;
                 renderizarDescripcion(
                     postCard.querySelector('[data-project-description]'),
@@ -479,6 +484,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     return;
                 }
 
+                const projectCount = document.querySelector('[data-project-count]');
+                projectCount.textContent = `${projects.length} ${projects.length === 1 ? t.projectLabel : t.projectsLabel}`;
+                projectCount.classList.remove('hidden');
                 const projectFragment = document.createDocumentFragment();
 
                 projects.forEach(project => {
@@ -492,15 +500,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                     postCard.className = 'project-item';
 
                     postCard.innerHTML = `
-                        <h2>
-                            <a href="${escaparHTML(projectData.postDetailUrl)}" class="project-title-link">
-                                ${escaparHTML(projectData.name)}
-                            </a>
-                        </h2>
                         ${imagen}
-                        <p class="project-badges">${projectData.progLanguagesHtml}</p>
-                        <p class="project-badges">${projectData.techStackHtml}</p>
-                        <div class="project-description" data-project-description></div>
+                        <div class="project-card-body">
+                            <div class="project-badges">${projectData.progLanguagesHtml}${projectData.techStackHtml}</div>
+                            <h2>
+                                <a href="${escaparHTML(projectData.postDetailUrl)}" class="project-title-link">
+                                    ${escaparHTML(projectData.name)}
+                                </a>
+                            </h2>
+                            <div class="project-description" data-project-description></div>
+                            <a href="${escaparHTML(projectData.postDetailUrl)}" class="editorial-link project-read-more">
+                                <span>${t.readProject}</span>
+                                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                <span class="visually-hidden">: ${escaparHTML(projectData.name)}</span>
+                            </a>
+                        </div>
                     `;
                     renderizarDescripcion(
                         postCard.querySelector('[data-project-description]'),

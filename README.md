@@ -11,6 +11,12 @@ Public project directory built with a static frontend and PocketBase. The applic
 - Links to the repository and public URL.
 - Bootstrap 5 and Bootstrap Icons served locally.
 - Responsive design for desktop and mobile devices.
+- An adapted Bootstrap Blog layout with an editorial introduction, a two-column
+  project grid on desktop, and a single column on mobile. Project details use a
+  centered reading layout with repository and public links near the title.
+- Original (cream editorial) and 16-bit visual styles, selectable from the shared
+  header and remembered locally. The blog layout preserves both palettes and
+  their typography; no additional theme or CDN dependency is required.
 
 ## Requirements
 

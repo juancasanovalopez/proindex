@@ -20,13 +20,26 @@
     <div class="container site-container">
         <div data-layout-header></div>
 
-        <div class="row g-5">
-            <main id="proyectos-lista" class="project-list col-lg-12" aria-live="polite">
+        <main id="main-content">
+            <section class="blog-intro" aria-labelledby="intro-title">
+                <p class="editorial-label" data-i18n="directory"></p>
+                <h1 id="intro-title" data-i18n="title"></h1>
+                <p class="subtitle" data-i18n="subtitle"></p>
+                <a class="editorial-link intro-link" href="#projects-heading">
+                    <span data-i18n="exploreProjects"></span>
+                    <i class="bi bi-arrow-down" aria-hidden="true"></i>
+                </a>
+            </section>
+            <div class="section-heading">
+                <h2 id="projects-heading" data-i18n="allProjects"></h2>
+                <span class="editorial-label hidden" data-project-count></span>
+            </div>
+            <div id="proyectos-lista" class="project-list" aria-live="polite" aria-labelledby="projects-heading">
                 <div id="estado-cargando" class="status" data-i18n="loading"></div>
                 <div id="estado-error" class="error-message hidden" data-i18n="error"></div>
                 <div id="estado-vacio" class="status hidden" data-i18n="empty"></div>
-            </main>
-        </div>
+            </div>
+        </main>
 
     </div>
     <div data-layout-footer></div>
