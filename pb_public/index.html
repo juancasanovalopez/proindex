@@ -25,10 +25,6 @@
                 <p class="editorial-label" data-i18n="directory"></p>
                 <h1 id="intro-title" data-i18n="title"></h1>
                 <p class="subtitle" data-i18n="subtitle"></p>
-                <a class="editorial-link intro-link" href="#projects-heading">
-                    <span data-i18n="exploreProjects"></span>
-                    <i class="bi bi-arrow-down" aria-hidden="true"></i>
-                </a>
             </section>
             <div class="section-heading">
                 <h2 id="projects-heading" data-i18n="allProjects"></h2>
@@ -45,3 +41,17 @@
     <div data-layout-footer></div>
 </body>
 </html>
+
+
+
+
+
+<div class="dropdown style-switcher">
+  <button class="btn style-switcher-toggle" type="button" id="${styleMenuId}" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Estilo" data-style-toggle>
+    <i class="bi bi-palette2" aria-hidden="true"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="${styleMenuId}">
+    <li><button class="dropdown-item" type="button" role="menuitemradio" value="16bit" data-visual-style-option data-i18n="style16Bit" aria-checked="false"></button></li>
+    <li><button class="dropdown-item" type="button" role="menuitemradio" value="original" data-visual-style-option data-i18n="styleOriginal" aria-checked="false"></button></li>
+  </ul>
+</div>

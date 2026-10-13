@@ -3,7 +3,7 @@
   "postTitle": "Portfolio | Project",
   "directory": "Directory",
   "allProjects": "All projects",
-  "subtitle": "A public list of shared resources",
+  "subtitle": "A list of sample projects",
   "loading": "Fetching records...",
   "error": "[System Error] Data could not be loaded.",
   "empty": "0 projects found in the database.",

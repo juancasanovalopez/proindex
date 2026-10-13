@@ -27,19 +27,18 @@ function getPublicProjectDetailUrl(postId) {
 
 function renderSharedHeader(page) {
     const navigation = page === 'post'
-        ? `<a class="blog-nav-link" href="./">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i>
-            <span data-i18n="allProjects"></span>
-           </a>`
+        ? ''
         : page === 'privacy'
-            ? '<a class="blog-nav-link" href="./" data-i18n="privacyBack"></a>'
+            ? ''
             : '';
     const contactMenuId = `contact-menu-${page}`;
     const styleMenuId = `style-menu-${page}`;
 
     return `
         <header class="blog-header">
-            <a class="blog-brand" href="./" data-i18n="title"></a>
+            <a class="blog-brand" href="./"> 
+                <i class="bi bi-house" aria-hidden="true"></i>
+            </a>
             <div class="header-actions">
                 ${navigation}
                 <div class="dropdown style-switcher hidden" data-contact-menu>
@@ -51,7 +50,6 @@ function renderSharedHeader(page) {
                 <div class="dropdown style-switcher">
                     <button class="btn style-switcher-toggle dropdown-toggle" type="button" id="${styleMenuId}" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Estilo" data-style-toggle>
                         <i class="bi bi-palette2" aria-hidden="true"></i>
-                        <span data-current-style></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="${styleMenuId}">
                         <li><button class="dropdown-item" type="button" role="menuitemradio" value="16bit" data-visual-style-option data-i18n="style16Bit" aria-checked="false"></button></li>
