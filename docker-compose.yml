@@ -5,6 +5,8 @@ services:
     user: "0:0"
     ports:
       - "8100:8090"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./pb_data:/pb_data
       - ./pb_public:/usr/local/bin/pb_public
@@ -13,6 +15,8 @@ services:
     environment:
       EMAIL: ${PB_ADMIN_EMAIL:?Set PB_ADMIN_EMAIL in .env}
       ADMIN_PASSWORD: ${PB_ADMIN_PASSWORD:?Set PB_ADMIN_PASSWORD in .env}
+      OLLAMA_URL: ${OLLAMA_URL:-http://host.docker.internal:11434}
+      CHAT_PUBLIC_ORIGIN: ${CHAT_PUBLIC_ORIGIN:-}
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8090/api/health"]
       interval: 10s

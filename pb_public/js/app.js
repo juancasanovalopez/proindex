@@ -394,6 +394,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         el.appendChild(privacyLink);
     });
 
+    if (document.body.dataset.page === 'chat-settings') {
+        initializeChatSettings(t);
+        return;
+    }
+
+    initializeLocalChat(t.chat);
+
     const elCargando = document.getElementById('estado-cargando');
     const elError = document.getElementById('estado-error');
     const elVacio = document.getElementById('estado-vacio');

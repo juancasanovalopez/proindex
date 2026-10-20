@@ -1,6 +1,6 @@
 export default [
     {
-        files: ['pb_public/js/app.js'],
+        files: ['pb_public/js/app.js', 'pb_public/js/chat.js', 'pb_public/js/chat-settings.js'],
         languageOptions: {
             ecmaVersion: 2021,
             sourceType: 'script',

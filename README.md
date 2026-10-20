@@ -136,6 +136,120 @@ The PocketBase server hook removes visitor records older than seven days once pe
 
 The collection itself is created by a native PocketBase migration, so visitor registration does not depend on an administrator login. If an existing installation was started before this migration was added, restart PocketBase once to apply it.
 
+## Local Ollama chat
+
+A bottom-right chat bubble is available on the directory, project and privacy
+pages. It opens an accessible modal in the browser's top layer, above page
+content. On mobile it fills the visible viewport, including adjustments for the
+on-screen keyboard and device safe areas. Public chat text follows the existing
+Spanish, English and French translations.
+
+Chat is **disabled by default**. To configure it:
+
+1. Set these additional values in `.env`:
+
+   ```env
+   OLLAMA_URL=http://host.docker.internal:11434
+   CHAT_PUBLIC_ORIGIN=https://your-public-domain.example
+   ```
+
+   `CHAT_PUBLIC_ORIGIN` must exactly match the browser origin (scheme, host and
+   port, without a path). Several origins can be separated by commas, for
+   example `https://your-public-domain.example,http://localhost:8100`. Opening
+   the site from any other address (such as `127.0.0.1` or a LAN IP when only
+   `localhost` is listed) makes the chat answer "address not allowed". The
+   proxy rejects missing or foreign origins; this is a browser
+   cross-origin protection, **not** authentication for public chat.
+
+2. Make Ollama reachable **from the PocketBase container**. `localhost:11434`
+   inside that container is not the host's Ollama. Compose adds the
+   `host.docker.internal` host-gateway alias for Linux. An Ollama server bound only
+   to host loopback may still reject Docker traffic: bind it to an appropriate
+   private interface and firewall port 11434 to the required private source.
+   Never publish the Ollama port to the Internet. You can instead use a private
+   Docker service address in `OLLAMA_URL`. The URL is operator-controlled only;
+   it cannot be edited through the public API or chat configuration page.
+
+3. Recreate the service to load environment changes and run migrations:
+
+   ```bash
+   docker compose up -d --force-recreate pocketbase
+   ```
+
+4. Open `/chat-settings.html` over HTTPS (localhost is allowed for development),
+   typing the address directly: the public site deliberately has no link to it.
+   Sign in with a PocketBase superuser, select a model from the list of chat
+   models installed in Ollama, save the configuration and enable public chat.
+   The list is loaded server-side through an administrator-only endpoint, and
+   enabling chat with a model that is not installed is rejected. The page also
+   configures the assistant's instructions and response token budget (1–512).
+   The page reuses the shared header, footer, browser-language translations and
+   remembered Original/16-bit visual style, like the rest of the site.
+
+### Chat safeguards and deployment requirements
+
+- Only PocketBase superusers can read or modify settings. Both settings and
+  quota collections have all public collection API rules locked. The model,
+  endpoint, system instructions, output limit and context size are controlled
+  by the server, not by the visitor. The model receives no tools, files,
+  credentials or access to private project records. Do not put secrets in the
+  system prompt; a language model is not an authorization boundary.
+- Administrator tokens stay in JavaScript memory only, never local/session
+  storage or cookies. The UI clears its session after five minutes without
+  input, on logout and on navigation. This does **not** revoke an already
+  issued PocketBase bearer token: configure short superuser token lifetimes.
+  Configuration responses are not cached, and the page has a restrictive CSP
+  and anti-framing headers.
+- **Enable superuser MFA and OTP in PocketBase and configure SMTP before public
+  deployment.** The configuration page supports the password + emailed OTP
+  MFA flow. A migration enables PocketBase's native rate limiter and adds
+  5-attempt/minute rules for superuser password login, OTP requests and OTP
+  verification, preserving any existing rules with those exact labels.
+- The proxy enforces one generation at a time, 3 requests/minute per connection
+  address, 10/minute globally and 100/day globally (UTC). Quotas and the
+  concurrency lease are transactional and persisted across server restarts.
+  Failed upstream generations also consume quota. The 60-second lease recovers
+  after a crash; Ollama requests time out after 45 seconds.
+- Quotas deliberately use the **direct connection IP**, not untrusted
+  `X-Forwarded-For` headers. Behind a reverse proxy, visitors may share the
+  per-connection limit. Forwarded-header spoofing cannot bypass that quota.
+  Add trusted edge rate limiting, request-body limits and timeouts to protect
+  PocketBase itself. Public quotas limit resource usage, not availability:
+  an attacker can exhaust the public daily allowance.
+- Input is limited to nine alternating messages, 2,000 characters per user
+  message, 8,000 characters total and a 32 KB request body. Only the four most
+  recent completed turns are sent. Longer conversations require an explicit
+  reset. Context is capped at 4,096 tokens and output at 512 tokens.
+- Model text is rendered as plain text, never HTML or executable Markdown.
+  The application does not persist conversations or log prompts/responses.
+  Connection hashes used for per-minute quotas are cleared by a minute cron
+  after expiry; only aggregate counters and configuration remain. Review your
+  reverse proxy and Ollama logging separately.
+- Terminate HTTPS at your reverse proxy, restrict `/chat-settings.html`, `/_/`,
+  the superuser authentication endpoints and `/api/local-chat/settings` to a
+  VPN or administrator IPs where possible, and prevent direct access to the
+  PocketBase origin that bypasses those restrictions. Do not treat a hidden
+  URL or the client-side login form as security. Apply network access controls
+  server-side. These application controls do not replace deployment hardening.
+
+### Chat validation
+
+```bash
+npm run lint
+npm test
+PB_TEST_BINARY=/absolute/path/to/pocketbase npm test
+```
+
+Tests use Node's built-in runner with no additional dependencies. Unit tests run
+normally; the integration test runs only when `PB_TEST_BINARY` is set. It starts
+a temporary PocketBase database and a mock Ollama server and checks collection
+locks, administrator authorization, configuration validation, origin checks,
+request size limits, Ollama requests, concurrency, quotas, upstream errors and
+security headers. No existing database is used.
+Frontend regression tests also verify that settings and public chat use the
+shared translation loader and remembered visual style, and that every settings
+label and status message is translated in Spanish, English and French.
+
 ## Project structure
 
 ```text
