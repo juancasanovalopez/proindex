@@ -51,9 +51,9 @@ function initializeChatSettings(t) {
                 logout(t.chatAdminDenied);
             }
             const error = new Error(response.status === 429 ? t.chatAdminLimited
-                : response.status === 502 && path.startsWith('/api/local-chat/')
+                : response.status === 502 && path.startsWith('api/local-chat/')
                     ? t.chatAdminModelsUnavailable
-                    : response.status === 400 && path === '/api/local-chat/settings'
+                    : response.status === 400 && path === 'api/local-chat/settings'
                         ? t.chatAdminInvalidSettings
                         : `${t.chatAdminFailed} (${response.status})`);
             throw error;
@@ -85,7 +85,7 @@ function initializeChatSettings(t) {
         modelSelect.disabled = true;
         refreshModels.disabled = true;
         try {
-            const data = await request('/api/local-chat/models', 'GET');
+            const data = await request('api/local-chat/models', 'GET');
             if (!Array.isArray(data.models) || data.models.some(model => typeof model !== 'string')) {
                 throw new Error(t.chatAdminModelsUnavailable);
             }
@@ -109,7 +109,7 @@ function initializeChatSettings(t) {
     async function authenticated(data) {
         if (typeof data.token !== 'string' || !data.record?.id) throw new Error(t.chatAdminInvalidAuth);
         token = data.token;
-        const config = await request('/api/local-chat/settings', 'GET');
+        const config = await request('api/local-chat/settings', 'GET');
         document.getElementById('chat-enabled').checked = config.enabled;
         document.getElementById('chat-prompt').value = config.system_prompt;
         document.getElementById('chat-tokens').value = config.max_tokens;
@@ -152,10 +152,10 @@ function initializeChatSettings(t) {
         const password = document.getElementById('admin-password');
         const secret = password.value;
         password.value = '';
-        const data = await request('/api/collections/_superusers/auth-with-password', 'POST', { identity: email, password: secret });
+        const data = await request('api/collections/_superusers/auth-with-password', 'POST', { identity: email, password: secret });
         if (data.mfaId) {
             mfaId = data.mfaId;
-            const otp = await request('/api/collections/_superusers/request-otp', 'POST', { email });
+            const otp = await request('api/collections/_superusers/request-otp', 'POST', { email });
             otpId = otp.otpId;
             login.hidden = true;
             mfa.hidden = false;
@@ -171,11 +171,11 @@ function initializeChatSettings(t) {
         const code = document.getElementById('admin-code');
         const password = code.value.trim();
         code.value = '';
-        await authenticated(await request('/api/collections/_superusers/auth-with-otp', 'POST', { otpId, password, mfaId }));
+        await authenticated(await request('api/collections/_superusers/auth-with-otp', 'POST', { otpId, password, mfaId }));
     }));
 
     form.addEventListener('submit', (event) => submit(event, async () => {
-        await request('/api/local-chat/settings', 'PUT', {
+        await request('api/local-chat/settings', 'PUT', {
             enabled: document.getElementById('chat-enabled').checked,
             model: modelSelect.value,
             system_prompt: document.getElementById('chat-prompt').value,

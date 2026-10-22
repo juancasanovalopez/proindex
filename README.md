@@ -229,7 +229,12 @@ Chat is **disabled by default**. To configure it:
   the superuser authentication endpoints and `/api/local-chat/settings` to a
   VPN or administrator IPs where possible, and prevent direct access to the
   PocketBase origin that bypasses those restrictions. Do not treat a hidden
-  URL or the client-side login form as security. Apply network access controls
+  URL or the client-side login form as security. When you add such restrictions
+  in Traefik, the routers that serve PocketBase must still forward every HTTP
+  method (`GET`, `POST`, `PUT`) for `/api/` to it. The frontend uses relative
+  `api/...` URLs, so a `PathPrefix` + `StripPrefix` deployment also works. A
+  `405` on the settings page usually means the request reached another
+  Traefik router or service instead of PocketBase. Apply network access controls
   server-side. These application controls do not replace deployment hardening.
 
 ### Chat validation

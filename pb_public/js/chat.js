@@ -77,7 +77,7 @@ function initializeLocalChat(t) {
         document.body.classList.add('chat-is-open');
         status.textContent = t.loading;
         try {
-            const response = await fetch('/api/local-chat/status', { cache: 'no-store', signal: AbortSignal.timeout(10000) });
+            const response = await fetch('api/local-chat/status', { cache: 'no-store', signal: AbortSignal.timeout(10000) });
             if (!response.ok) throw new Error(`Chat status: ${response.status}`);
             enabled = (await response.json()).enabled === true;
             status.textContent = enabled ? '' : t.disabled;
@@ -122,7 +122,7 @@ function initializeLocalChat(t) {
         updateComposer();
         status.textContent = t.thinking;
         try {
-            const response = await fetch('/api/local-chat/messages', {
+            const response = await fetch('api/local-chat/messages', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ messages }),

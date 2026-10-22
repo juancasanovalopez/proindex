@@ -19,6 +19,13 @@ test('chat settings translations cover all markup and status messages in every l
     }
 });
 
+test('frontend API calls stay relative so the site works behind a reverse-proxy path prefix', () => {
+    for (const file of ['app.js', 'chat.js', 'chat-settings.js']) {
+        const source = fs.readFileSync(`pb_public/js/${file}`, 'utf8');
+        assert.doesNotMatch(source, /['"`]\/api\//, `${file} must not use root-absolute /api/ paths`);
+    }
+});
+
 test('settings and public chat reuse the shared language and remembered visual style', async () => {
     const source = fs.readFileSync('pb_public/js/app.js', 'utf8');
     for (const lang of ['es', 'en', 'fr']) {
