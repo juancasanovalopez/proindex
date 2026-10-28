@@ -1,0 +1,14 @@
+.posts-editor fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
+.posts-pagination { align-items: center; margin: 1rem 0 2rem; }
+.post-field { margin-bottom: 1.5rem; }
+.post-field small { display: block; color: var(--text-muted); overflow-wrap: anywhere; }
+.post-field select[multiple] { min-height: 8rem; }
+.post-toolbar { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .5rem; }
+.post-preview { padding: 1rem; border: 1px solid var(--border-color); overflow-wrap: anywhere; }
+.post-preview:empty { display: none; }
+.post-files { display: grid; gap: .75rem; margin: .75rem 0; }
+.post-file { border: 1px solid var(--border-color); padding: .75rem; overflow-wrap: anywhere; }
+.post-file img { display: block; max-width: 100%; max-height: 12rem; margin-bottom: .5rem; }
+.posts-editor textarea { resize: vertical; }
+.posts-editor input[readonly] { color: var(--text-muted); }
+.settings-navigation { margin-bottom: 2rem; }

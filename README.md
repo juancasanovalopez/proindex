@@ -21,7 +21,10 @@ Public project directory built with a static frontend and PocketBase. The applic
 ## Requirements
 
 - Docker and Docker Compose.
-- Node.js and npm to run ESLint locally.
+- Node.js 26.13.0 LTS or a newer 26.x release, with its bundled npm, for lint and
+  tests. `.nvmrc` pins the verified version; `package.json` sets the minimum to
+  include the latest security fixes available when this version was selected.
+  Node.js is development tooling only: Docker runs PocketBase, not a Node server.
 
 ## Configuration
 
@@ -39,6 +42,25 @@ Public project directory built with a static frontend and PocketBase. The applic
    ```
 
     Do not upload `.env` to the repository. The file is excluded through `.gitignore`.
+
+   Setting these variables does not create a PocketBase superuser or change an
+   existing account's password: the image used here starts PocketBase directly.
+   After starting the container, explicitly create the intended administrator:
+
+   ```bash
+   docker compose exec pocketbase /usr/local/bin/pocketbase superuser create \
+     'your-admin@example.com' 'YOUR-LONG-UNIQUE-PASSWORD' \
+     --dir=/pb_data --automigrate=false
+   ```
+
+   Use the intended email and password rather than the example values. This
+   creates a privileged account; do not create another if you already have a
+   working superuser. Both `/_/` and `settings.html` require the credentials
+   stored in PocketBase, not simply the values written in `.env`.
+   To reset the password of an existing superuser, use `superuser update` instead
+   of `superuser create`, with that account's existing email. Password arguments
+   may be retained in shell history; run these commands only in a trusted
+   administrative environment.
 
 ## Running with Docker
 
@@ -66,8 +88,15 @@ Persistent PocketBase data is stored in `pb_data/` and mounted into the containe
 Install the Node.js dependencies:
 
 ```bash
+nvm install
+nvm use
 npm install
 ```
+
+The `nvm` commands select the version in `.nvmrc` without replacing the system's
+Node installation. If you do not use nvm, select Node.js 26.13.0 with your preferred
+version manager before running npm. Keep the 26.x runtime patched; update `.nvmrc`
+and the minimum `engines.node` version together after validating a newer release.
 
 Run ESLint on the frontend:
 
@@ -107,13 +136,44 @@ The `projects` collection must provide at least the following fields:
 - `repo`: code repository URL.
 - `public`: public project URL.
 - `is_public`: boolean visibility flag. Only records with `is_public = true` are exposed on the public website and through public PocketBase list/detail rules.
-- `schema`: project-specific Mermaid diagram, displayed in the detail view.
+- `arch_schema`: project-specific Mermaid diagram, displayed in the detail view.
 
 The `languages` and `tech_stack` fields may be received as single values or arrays. The frontend normalizes both cases before rendering the badges.
 
 The `is_public` field is created by the PocketBase migration `20260922120000_add_project_visibility.js` when the `projects` collection already exists. Existing records default to private (`false`), so publish each project intentionally from the PocketBase dashboard.
 
-The `schema` field must contain only the diagram's Mermaid code. For example:
+### Administrative post editor
+
+Open `settings.html` to manage posts and chat with a **single sign-in**. Use the
+section buttons to switch between the post editor and chat settings without
+losing unsaved edits or authenticating again. Each section loads on first use;
+a chat/Ollama error does not block the post editor. The shared logout and inactivity
+timeout clear both sections. The old `chat-settings.html` and `posts-editor.html`
+addresses redirect to the corresponding section of `settings.html`.
+
+Create or edit public and private projects by signing in with an existing
+PocketBase **superuser**. Regular collection users cannot
+administer projects. HTTPS (or localhost during development) is required.
+MFA/OTP is supported when configured in PocketBase; tokens stay in tab memory,
+are never stored in local storage and expire locally after five idle minutes.
+
+The editor reads the actual `projects` collection schema, including select
+options and file limits. It includes the name, repository/public URLs, programming
+languages, technology stack, screenshots, all three translated HTML descriptions,
+`arch_schema` Mermaid source and `is_public`. System fields such as `id` are shown
+read-only. Descriptions provide HTML formatting controls and a sanitized preview
+matching the public renderer. Screenshots can be uploaded, retained or individually
+removed on save. The paginated selector includes private projects; public preview
+links appear only for published records. Changes are saved explicitly; navigation
+warns before discarding unsaved edits.
+
+Restart PocketBase to apply `20261028120000_restrict_project_writes.js` on existing
+installations. This migration locks project creation, updates and deletion to
+superusers without changing public read/visibility rules or existing records.
+It intentionally does not restore permissive write rules on rollback.
+The `projects` collection must already exist, as with the public directory.
+
+The `arch_schema` field must contain only the diagram's Mermaid code. For example:
 
 ````text
 flowchart LR
@@ -122,7 +182,8 @@ flowchart LR
     api --> data[("projects")]
 ````
 
-The detail view loads Mermaid locally and renders the diagram associated with the record. If a project does not have `schema`, the diagram section is not displayed. For compatibility with existing records, the `diagram` and `architecture` fields are also accepted, although `schema` is the recommended name.
+The detail view loads Mermaid locally and renders the diagram associated with the
+record's `arch_schema` field.
 
 ## Contact information
 
@@ -176,7 +237,7 @@ Chat is **disabled by default**. To configure it:
    docker compose up -d --force-recreate pocketbase
    ```
 
-4. Open `/chat-settings.html` over HTTPS (localhost is allowed for development),
+4. Open `/settings.html#chat` over HTTPS (localhost is allowed for development),
    typing the address directly: the public site deliberately has no link to it.
    Sign in with a PocketBase superuser, select a model from the list of chat
    models installed in Ollama, save the configuration and enable public chat.
@@ -225,19 +286,19 @@ Chat is **disabled by default**. To configure it:
   Connection hashes used for per-minute quotas are cleared by a minute cron
   after expiry; only aggregate counters and configuration remain. Review your
   reverse proxy and Ollama logging separately.
-- Terminate HTTPS at your reverse proxy, restrict `/chat-settings.html`, `/_/`,
+- Terminate HTTPS at your reverse proxy, restrict `/settings.html`, `/_/`,
   the superuser authentication endpoints and `/api/local-chat/settings` to a
   VPN or administrator IPs where possible, and prevent direct access to the
   PocketBase origin that bypasses those restrictions. Do not treat a hidden
   URL or the client-side login form as security. When you add such restrictions
   in Traefik, the routers that serve PocketBase must still forward every HTTP
-  method (`GET`, `POST`, `PUT`) for `/api/` to it. The frontend uses relative
+  method (`GET`, `POST`, `PUT`, `PATCH`) for `/api/` to it. The frontend uses relative
   `api/...` URLs, so a `PathPrefix` + `StripPrefix` deployment also works. A
   `405` on the settings page usually means the request reached another
   Traefik router or service instead of PocketBase. Apply network access controls
   server-side. These application controls do not replace deployment hardening.
 
-### Chat validation
+### Administration and chat validation
 
 ```bash
 npm run lint
@@ -246,12 +307,16 @@ PB_TEST_BINARY=/absolute/path/to/pocketbase npm test
 ```
 
 Tests use Node's built-in runner with no additional dependencies. Unit tests run
-normally; the integration test runs only when `PB_TEST_BINARY` is set. It starts
-a temporary PocketBase database and a mock Ollama server and checks collection
+normally; integration tests run only when `PB_TEST_BINARY` is set. They use
+temporary PocketBase databases (and a mock Ollama server for chat) and check collection
 locks, administrator authorization, configuration validation, origin checks,
 request size limits, Ollama requests, concurrency, quotas, upstream errors and
-security headers. No existing database is used.
-Frontend regression tests also verify that settings and public chat use the
+security headers. Editor tests cover all project fields, system-field protection,
+HTML preservation, upload limits, file retention/appending/removal, private and
+public visibility, native API writes, regular-user denials and unsaved changes.
+Shared authentication tests cover MFA/OTP, multipart requests, inactivity expiry
+and stale responses after logout. No existing database is used.
+Frontend regression tests also verify that the unified administration page and public chat use the
 shared translation loader and remembered visual style, and that every settings
 label and status message is translated in Spanish, English and French.
 
@@ -270,6 +335,7 @@ label and status message is translated in Spanish, English and French.
 └── pb_public/
     ├── index.html           # List view
     ├── post.html            # Detail view
+    ├── settings.html        # Unified superuser administration: posts and chat
     ├── privacy.html         # Privacy information
     ├── css/
     │   ├── bootstrap.min.css
@@ -278,6 +344,9 @@ label and status message is translated in Spanish, English and French.
     │   └── styles.css       # Custom styles
     └── js/
         ├── app.js           # i18n, API queries, and rendering
+        ├── admin-session.js # Shared administrative login, MFA and session expiry
+        ├── settings.js      # Single session and section navigation
+        ├── posts-editor.js  # Schema-driven project forms and native API writes
         ├── bootstrap.bundle.min.js
         └── mermaid.min.js    # Mermaid diagram rendering
 ```

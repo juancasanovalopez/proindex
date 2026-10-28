@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; connect-src 'self'; img-src 'self'; font-src 'self' https://fonts.gstatic.com; form-action 'self'; base-uri 'none'; object-src 'none'">
+    <title data-i18n="settingsTitle">Configuración</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/chat.css">
+    <link rel="stylesheet" href="./css/posts-editor.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script defer src="./js/bootstrap.bundle.min.js"></script>
+    <script defer src="./js/app.js?v=settings"></script>
+    <script defer src="./js/admin-session.js"></script>
+    <script defer src="./js/posts-editor.js?v=settings"></script>
+    <script defer src="./js/chat-settings.js?v=settings"></script>
+    <script defer src="./js/settings.js"></script>
+</head>
+<body data-page="settings">
+    <main class="container site-container">
+        <div data-layout-header></div>
+        <div class="project-content">
+            <article class="project-detail chat-settings posts-editor">
+                <header class="project-detail-header">
+                    <p class="editorial-label" data-i18n="chatAdminLabel"></p>
+                    <h1 id="settings-title" data-i18n="settingsTitle"></h1>
+                    <p data-i18n="chatAdminIntro"></p>
+                </header>
+                <form id="chat-login" hidden>
+                    <label class="editorial-label" for="admin-email" data-i18n="chatAdminEmail"></label>
+                    <input id="admin-email" type="email" autocomplete="username" required maxlength="254">
+                    <label class="editorial-label" for="admin-password" data-i18n="chatAdminPassword"></label>
+                    <input id="admin-password" type="password" autocomplete="current-password" required>
+                    <button class="btn style-switcher-toggle chat-action" type="submit" data-i18n="chatAdminLogin"></button>
+                </form>
+                <form id="chat-mfa" hidden>
+                    <label class="editorial-label" for="admin-code" data-i18n="chatAdminCode"></label>
+                    <input id="admin-code" type="text" inputmode="numeric" autocomplete="one-time-code" required maxlength="20">
+                    <button class="btn style-switcher-toggle chat-action" type="submit" data-i18n="chatAdminVerify"></button>
+                </form>
+                <div id="settings-administration" hidden>
+                    <div class="chat-settings-actions settings-navigation" role="group" aria-labelledby="settings-title">
+                        <button class="btn style-switcher-toggle chat-action" type="button" data-settings-section="posts" aria-controls="settings-posts" aria-pressed="false" data-i18n="postsAdminTitle"></button>
+                        <button class="btn style-switcher-toggle chat-action" type="button" data-settings-section="chat" aria-controls="settings-chat" aria-pressed="false" data-i18n="chatAdminTitle"></button>
+                        <button class="btn style-switcher-toggle chat-action" type="button" id="chat-logout" data-i18n="chatAdminLogout"></button>
+                    </div>
+                    <section id="settings-posts" hidden aria-labelledby="settings-posts-title">
+                        <h2 id="settings-posts-title" data-i18n="postsAdminTitle"></h2>
+                        <div id="posts-administration" hidden>
+                            <div class="chat-settings-actions">
+                                <button class="btn style-switcher-toggle chat-action" type="button" id="post-new" data-i18n="postsAdminNew"></button>
+                            </div>
+                            <fieldset id="posts-controls">
+                                <label class="editorial-label" for="post-select" data-i18n="postsAdminSelect"></label>
+                                <select id="post-select"></select>
+                                <div class="chat-settings-actions posts-pagination">
+                                    <button class="btn style-switcher-toggle chat-action" type="button" id="posts-previous" data-i18n="postsAdminPrevious"></button>
+                                    <span id="posts-page"></span>
+                                    <button class="btn style-switcher-toggle chat-action" type="button" id="posts-next" data-i18n="postsAdminNext"></button>
+                                </div>
+                                <form id="post-editor">
+                                    <p id="post-mode" class="editorial-label"></p>
+                                    <p data-i18n="postsAdminFieldsHelp"></p>
+                                    <div id="post-fields"></div>
+                                    <div class="chat-settings-actions">
+                                        <button class="btn style-switcher-toggle chat-action" type="submit" data-i18n="postsAdminSave"></button>
+                                        <button class="btn style-switcher-toggle chat-action" type="button" id="post-reset" data-i18n="postsAdminReset"></button>
+                                        <a class="btn style-switcher-toggle chat-action" id="post-view" target="_blank" rel="noopener noreferrer" hidden data-i18n="readProject"></a>
+                                    </div>
+                                </form>
+                            </fieldset>
+                        </div>
+                    </section>
+                    <section id="settings-chat" hidden aria-labelledby="settings-chat-title">
+                        <h2 id="settings-chat-title" data-i18n="chatAdminTitle"></h2>
+                        <form id="chat-configuration" hidden>
+                            <p data-i18n="chatAdminEndpoint"></p>
+                            <label class="editorial-label"><input id="chat-enabled" type="checkbox"> <span data-i18n="chatAdminEnabled"></span></label>
+                            <label class="editorial-label" for="chat-model" data-i18n="chatAdminModel"></label>
+                            <div class="chat-model-picker">
+                                <select id="chat-model" required>
+                                    <option value="" data-i18n="chatAdminModelPlaceholder"></option>
+                                </select>
+                                <button class="btn style-switcher-toggle chat-action" type="button" id="chat-models-refresh" data-i18n="chatAdminModelsRefresh"></button>
+                            </div>
+                            <label class="editorial-label" for="chat-prompt" data-i18n="chatAdminPrompt"></label>
+                            <textarea id="chat-prompt" maxlength="2000" rows="5"></textarea>
+                            <label class="editorial-label" for="chat-tokens" data-i18n="chatAdminTokens"></label>
+                            <input id="chat-tokens" type="number" min="1" max="512" required>
+                            <p class="chat-settings-limits" data-i18n="chatAdminLimits"></p>
+                            <div class="chat-settings-actions">
+                                <button class="btn style-switcher-toggle chat-action" type="submit" data-i18n="chatAdminSave"></button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+                <p id="settings-status" class="status chat-settings-status" role="status" aria-live="polite"></p>
+            </article>
+        </div>
+    </main>
+    <div data-layout-footer></div>
+</body>
+</html>

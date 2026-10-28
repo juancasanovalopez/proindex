@@ -1,7 +1,10 @@
 {
   "private": true,
+  "engines": {
+    "node": "^26.13.0"
+  },
   "scripts": {
-    "lint": "eslint pb_public/js/app.js pb_public/js/chat.js pb_public/js/chat-settings.js",
+    "lint": "eslint pb_public/js/app.js pb_public/js/chat.js pb_public/js/chat-settings.js pb_public/js/admin-session.js pb_public/js/posts-editor.js pb_public/js/settings.js",
     "test": "node --test tests/*.test.cjs",
     "lint:fix": "npm run lint -- --fix"
   },

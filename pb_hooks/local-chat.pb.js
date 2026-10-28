@@ -68,12 +68,15 @@ cronAdd('cleanup-local-chat-clients', '* * * * *', () => {
 });
 
 routerUse((e) => {
-    if (e.request.url.path === '/chat-settings.html') {
+    if (['/settings.html', '/chat-settings.html', '/posts-editor.html'].includes(e.request.url.path)) {
         e.response.header().set('Cache-Control', 'no-store');
         e.response.header().set('X-Frame-Options', 'DENY');
         e.response.header().set('Referrer-Policy', 'no-referrer');
         e.response.header().set('X-Content-Type-Options', 'nosniff');
         e.response.header().set('Content-Security-Policy', "default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; connect-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'none'; object-src 'none'");
+        if (e.request.url.path !== '/settings.html') {
+            return e.redirect(302, `settings.html#${e.request.url.path === '/chat-settings.html' ? 'chat' : 'posts'}`);
+        }
     }
     return e.next();
 });

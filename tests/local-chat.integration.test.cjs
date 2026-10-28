@@ -139,7 +139,7 @@ test('isolated PocketBase API: auth, configuration, Ollama, origins and quotas',
     assert.equal((await api(`${prefix}/messages`, 'POST', body, '', { 'X-Forwarded-For': '1.2.3.4' })).status, 429);
     assert.equal((await api(`${prefix}/settings`, 'PUT', { ...config, enabled: false }, token)).status, 200);
     assert.equal((await api(`${prefix}/messages`, 'POST', body)).status, 503);
-    const settingsPage = await api('/chat-settings.html');
+    const settingsPage = await api('/settings.html');
     assert.equal(settingsPage.headers.get('x-frame-options'), 'DENY');
     assert.match(settingsPage.headers.get('content-security-policy'), /frame-ancestors 'none'/);
     let last;

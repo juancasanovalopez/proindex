@@ -161,13 +161,13 @@ async function loadTranslations(lang) {
     const requestedLanguage = supportedLanguages.includes(lang) ? lang : 'es';
 
     try {
-        const response = await fetch(`./locales/${requestedLanguage}.json`);
+        const response = await fetch(`./locales/${requestedLanguage}.json`, { cache: 'no-cache' });
         if (!response.ok) throw new Error(`Translation file not found: ${requestedLanguage}`);
         return await response.json();
     } catch (error) {
         if (requestedLanguage === 'es') throw error;
 
-        const fallbackResponse = await fetch('./locales/es.json');
+        const fallbackResponse = await fetch('./locales/es.json', { cache: 'no-cache' });
         if (!fallbackResponse.ok) throw error;
         return fallbackResponse.json();
     }
@@ -394,8 +394,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         el.appendChild(privacyLink);
     });
 
-    if (document.body.dataset.page === 'chat-settings') {
-        initializeChatSettings(t);
+    if (document.body.dataset.page === 'settings') {
+        initializeSettings(t);
         return;
     }
 
